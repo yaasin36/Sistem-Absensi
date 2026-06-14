@@ -1,51 +1,45 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <!-- WAJIB UNTUK GAS: Target top frame agar links dan navigasi tidak crash di Iframe -->
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Absensi - PT Garuda Karya Solution</title>
   
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   
-  <!-- Face API for Face Detection -->
   <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
   <style>
     :root {
-      /* GREEN LIGHT THEME PALETTE based on new reference image */
-      --primary: #55A630; /* Vibrant Leaf Green */
-      --primary-hover: #38b000;
-      --primary-light: #E8F5E9; /* Very light green */
-      --bg-main: #F4F9F4; /* Soft green tinted off-white background */
-      --surface: #FFFFFF; /* Pure white cards */
-      --text-main: #1F2937; /* Dark Gray */
-      --text-muted: #738A73; /* Greenish Gray for text */
-      --border-color: #E2E8F0;
-      --radius-lg: 30px;
-      --radius-md: 20px;
-      --shadow-sm: 0 4px 15px rgba(0,0,0,0.03);
-      --shadow-md: 0 10px 30px rgba(85, 166, 48, 0.1);
+      var(--primary): #55A630;
+      var(--primary-hover): #38b000;
+      var(--primary-light): #E8F5E9;
+      var(--bg-main): #F4F9F4;
+      var(--surface): #FFFFFF;
+      var(--text-main): #1F2937;
+      var(--text-muted): #738A73;
+      var(--border-color): #E2E8F0;
+      var(--radius-lg): 30px;
+      var(--radius-md): 20px;
+      var(--shadow-sm): 0 4px 15px rgba(0,0,0,0.03);
+      var(--shadow-md): 0 10px 30px rgba(85, 166, 48, 0.1);
     }
 
     body { 
-      background-color: var(--bg-main);
+      background-color: #F4F9F4;
       font-family: 'Plus Jakarta Sans', sans-serif; 
-      color: var(--text-main); 
+      color: #1F2937; 
       min-height: 100vh;
       overflow-x: hidden;
-      padding-bottom: 110px; /* Space for bottom nav */
+      padding-bottom: 110px;
     }
 
-    /* Page Transitions */
     .page { display: none; }
     .page.active { 
       display: block; 
@@ -56,46 +50,42 @@
       100% { opacity: 1; transform: translateY(0); } 
     }
 
-    /* Desktop Top Navbar */
     .navbar-custom { 
-      background: var(--surface); 
+      background: #FFFFFF; 
       border-bottom: 1px solid rgba(0,0,0,0.05);
       padding: 15px 0; 
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
-    .navbar-custom .navbar-brand { color: var(--primary) !important; font-weight: 800; font-size: 1.5rem; letter-spacing: 0.5px;}
-    .navbar-custom .nav-link { color: var(--text-muted) !important; font-weight: 600; font-size: 0.95rem; margin: 0 5px; border-radius: 8px; transition: all 0.2s;}
-    .navbar-custom .nav-link:hover, .navbar-custom .nav-link.active { background: var(--primary-light); color: var(--primary) !important; }
+    .navbar-custom .navbar-brand { color: #55A630 !important; font-weight: 800; font-size: 1.5rem; letter-spacing: 0.5px;}
+    .navbar-custom .nav-link { color: #738A73 !important; font-weight: 600; font-size: 0.95rem; margin: 0 5px; border-radius: 8px; transition: all 0.2s;}
+    .navbar-custom .nav-link:hover, .navbar-custom .nav-link.active { background: #E8F5E9; color: #55A630 !important; }
     
-    /* Modern Light Card */
     .modern-card { 
-      background: var(--surface); 
-      border-radius: var(--radius-lg); 
+      background: #FFFFFF; 
+      border-radius: 30px; 
       border: none; 
-      box-shadow: var(--shadow-sm); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
       overflow: hidden; 
     }
 
-    /* Inputs */
     .form-control, .form-select { 
       border-radius: 14px; 
       padding: 14px 18px; 
-      border: 1px solid var(--border-color); 
-      background-color: var(--surface) !important; 
-      color: var(--text-main) !important;
+      border: 1px solid #E2E8F0; 
+      background-color: #FFFFFF !important; 
+      color: #1F2937 !important;
       font-size: 0.95rem; 
       font-weight: 500;
       box-shadow: none !important;
     }
     .form-control::placeholder { color: #A0AEC0; }
     .form-control:focus, .form-select:focus { 
-      border-color: var(--primary); 
+      border-color: #55A630; 
       box-shadow: 0 0 0 4px rgba(85, 166, 48, 0.15) !important; 
     }
 
-    /* Buttons */
     .btn-primary-modern { 
-      background-color: var(--primary); 
+      background-color: #55A630; 
       border: none;
       border-radius: 16px; 
       color: white; 
@@ -104,39 +94,17 @@
       transition: all 0.2s ease; 
     }
     .btn-primary-modern:hover { 
-      background-color: var(--primary-hover); 
+      background-color: #38b000; 
       transform: translateY(-2px); 
       box-shadow: 0 8px 20px rgba(85, 166, 48, 0.3); 
       color: white; 
     }
 
-    /* Search Pill (Dashboard) */
-    .search-pill {
-      background: var(--surface);
-      border-radius: 50px;
-      padding: 6px 6px 6px 20px;
-      display: flex;
-      align-items: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .search-pill input {
-      border: none; background: transparent; outline: none; width: 100%;
-      font-size: 0.95rem; color: var(--text-main); font-weight: 500;
-    }
-    .search-pill input::placeholder { color: #A0AEC0; }
-    .search-pill-icon {
-      background: var(--primary); color: white;
-      width: 42px; height: 42px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-      margin-left: 10px; flex-shrink: 0;
-    }
-
-    /* Hero Green Card (Top Doctors equivalent) */
     .hero-green-card {
       background: linear-gradient(135deg, #6BB736, #4A9322);
-      border-radius: var(--radius-lg);
+      border-radius: 30px;
       overflow: hidden;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 10px 30px rgba(85, 166, 48, 0.1);
       color: white;
     }
     .hero-calendar-glass {
@@ -155,40 +123,37 @@
     }
     .week-day.active-day {
       background: #ffffff;
-      color: var(--primary);
+      color: #55A630;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       transform: scale(1.05);
     }
     .week-day .day-letter { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;}
     .week-day .date-num { font-size: 1.1rem; font-weight: 800; }
 
-    /* Horizontal Scroll Sections */
     .scroll-x {
       display: flex; overflow-x: auto; gap: 10px; padding-bottom: 5px;
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none; 
     }
-    .scroll-x::-webkit-scrollbar { display: none; /* Chrome */ }
+    .scroll-x::-webkit-scrollbar { display: none; }
 
-    /* Pill Tabs for filters */
     .pill-tab {
-      background: var(--surface); border: 1px solid var(--border-color);
-      color: var(--text-muted); border-radius: 50px;
+      background: #FFFFFF; border: 1px solid #E2E8F0;
+      color: #738A73; border-radius: 50px;
       padding: 8px 20px; font-weight: 700; font-size: 0.85rem;
       white-space: nowrap; cursor: pointer; transition: all 0.2s;
     }
-    .pill-tab.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(85, 166, 48, 0.3);}
+    .pill-tab.active { background: #55A630; color: white; border-color: #55A630; box-shadow: 0 4px 10px rgba(85, 166, 48, 0.3);}
 
-    /* Activity Cards */
     .activity-card-new {
-      background: var(--surface); border-radius: var(--radius-md);
+      background: #FFFFFF; border-radius: 20px;
       padding: 16px; display: flex; align-items: center;
-      box-shadow: var(--shadow-sm); border: none; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: none; cursor: pointer;
       transition: transform 0.2s;
     }
     .activity-card-new:hover { transform: translateY(-3px); }
     .act-avatar {
       width: 55px; height: 55px; border-radius: 18px;
-      background: var(--primary-light); color: var(--primary);
+      background: #E8F5E9; color: #55A630;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.5rem; font-weight: bold; margin-right: 15px; flex-shrink:0;
       overflow: hidden;
@@ -196,16 +161,15 @@
     .act-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .act-arrow {
       width: 36px; height: 36px; border-radius: 50%;
-      background: var(--primary-light); color: var(--primary);
+      background: #E8F5E9; color: #55A630;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.1rem; flex-shrink: 0;
     }
 
-    /* Notification Items */
     .notif-item {
-        background: var(--surface); border-radius: 16px; padding: 16px;
+        background: #FFFFFF; border-radius: 16px; padding: 16px;
         display: flex; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        border: 1px solid var(--border-color); margin-bottom: 12px;
+        border: 1px solid #E2E8F0; margin-bottom: 12px;
         align-items: flex-start;
     }
     .notif-icon {
@@ -214,7 +178,6 @@
         font-size: 1.4rem; flex-shrink: 0;
     }
     
-    /* Bottom Navigation Container & Layout */
     .bottom-nav-container {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
     }
@@ -231,78 +194,36 @@
       color: #A0AEC0; font-size: 0.75rem; font-weight: 700;
       width: 50px; cursor: pointer; transition: all 0.2s;
     }
-    .bottom-nav-item.active { color: var(--primary); }
+    .bottom-nav-item.active { color: #55A630; }
     .bottom-nav-item i { font-size: 1.5rem; margin-bottom: 2px; }
 
-    /* Floating Center Button (FAB) */
     .fab-center {
       position: absolute; top: -35px; left: 50%; transform: translateX(-50%);
       width: 75px; height: 75px;
       background: linear-gradient(135deg, #74C640, #4A9322);
       border-radius: 50%;
-      border: 8px solid var(--bg-main);
+      border: 8px solid #F4F9F4;
       display: flex; align-items: center; justify-content: center;
       color: white; font-size: 2.2rem;
       box-shadow: 0 10px 25px rgba(85, 166, 48, 0.4);
       cursor: pointer; z-index: 1001; transition: transform 0.2s;
     }
     .fab-center:active { transform: translateX(-50%) scale(0.95); }
-    
-    /* Glowing Ripple around FAB */
-    .fab-center::before {
-      content: ''; position: absolute;
-      width: 100%; height: 100%; border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.4);
-      top: 0; left: 0; transform: scale(0.8);
-    }
 
-    @keyframes bounceGently {
-      0%, 100% { transform: translate(-50%, 0); }
-      50% { transform: translate(-50%, -5px); }
-    }
-    .fab-instruction {
-      position: absolute;
-      top: -38px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--text-main);
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 12px;
-      white-space: nowrap;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      animation: bounceGently 2s infinite ease-in-out;
-      pointer-events: none;
-    }
-    .fab-instruction::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 5px 5px 0;
-      border-style: solid;
-      border-color: var(--text-main) transparent transparent transparent;
-    }
-
-    /* Camera Container */
     #cameraContainer { 
       width: 100%; max-width: 640px; margin: 0 auto; 
       border-radius: 24px; overflow: hidden; 
-      background: #000; box-shadow: var(--shadow-md); 
-      position: relative; border: 4px solid var(--surface);
+      background: #000; box-shadow: 0 10px 30px rgba(85, 166, 48, 0.1); 
+      position: relative; border: 4px solid #FFFFFF;
     }
     #cameraView { width: 100%; height: auto; display: block; object-fit: contain; position: relative; z-index: 1;}
     #canvasPreview { display: none; }
 
     .spinner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255, 0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; }
     
-    /* Calendar Grid Specific Styles */
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
     @media (max-width: 576px) { .calendar-grid { gap: 5px; } }
-    .calendar-day-header { text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); padding-bottom: 5px;}
+    .calendar-day-header { text-align: center; font-size: 0.85rem; font-weight: 700; color: #738A73; padding-bottom: 5px;}
     .calendar-day { 
       aspect-ratio: 1; border-radius: 14px; background: #F3F6F3; 
       display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -318,21 +239,19 @@
     .status-absent { background: #EF4444; } 
     .status-leave { background: #3b82f6; } 
 
-    /* Modals */
-    .modal-content.light-modal { background: var(--surface); border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+    .modal-content.light-modal { background: #FFFFFF; border: none; border-radius: 30px; box-shadow: 0 10px 30px rgba(85, 166, 48, 0.1); }
     .modal-header { border-bottom: 1px solid rgba(0,0,0,0.05); }
     .modal-footer { border-top: 1px solid rgba(0,0,0,0.05); }
 
-    /* Custom Profile Design */
     .profile-header-card {
         background: linear-gradient(180deg, #d4edda 0%, #ffffff 100%);
-        border-radius: var(--radius-lg);
+        border-radius: 30px;
         padding: 30px 20px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         border: 1px solid rgba(85, 166, 48, 0.1);
     }
     .profile-menu-item {
-        background: var(--surface);
+        background: #FFFFFF;
         border-radius: 14px;
         padding: 16px 20px;
         display: flex;
@@ -341,15 +260,14 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         cursor: pointer;
         transition: all 0.2s;
-        border: 1px solid var(--border-color);
+        border: 1px solid #E2E8F0;
     }
     .profile-menu-item:hover {
         transform: translateY(-2px);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         border-color: rgba(85, 166, 48, 0.3);
     }
     
-    /* Desktop vs Mobile adjustments */
     @media (min-width: 992px) {
       body { padding-top: 90px; padding-bottom: 30px; }
       .bottom-nav-container { display: none !important; }
@@ -365,10 +283,10 @@
 
   <!-- Loading Overlay -->
   <div id="loadingSpinner" class="spinner-overlay">
-    <div class="spinner-border" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.35rem; color: var(--primary) !important;">
+    <div class="spinner-border" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.35rem; color: #55A630 !important;">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <div class="mt-3 fw-bold fs-6" style="color: var(--text-main);" id="loadingText">Memproses...</div>
+    <div class="mt-3 fw-bold fs-6" style="color: #1F2937;" id="loadingText">Memproses...</div>
   </div>
 
   <!-- Global Notif Banner -->
@@ -402,7 +320,6 @@
   <!-- Bottom Navigation (Mobile Only) -->
   <div class="bottom-nav-container d-none" id="bottomNav">
     <div class="fab-center" onclick="switchPage('pageAbsen')" title="Absen Kamera">
-      <div class="fab-instruction">Klik Absen!</div>
       <i class="bi bi-camera-video-fill"></i>
     </div>
     <div class="bottom-nav-bg">
@@ -412,8 +329,6 @@
       <div class="bottom-nav-item" id="nav-btn-pageIzin" onclick="switchPage('pageIzin')" style="margin-right: 35px;">
         <i class="bi bi-envelope-paper-fill"></i><span>Izin</span>
       </div>
-      
-      <!-- Spacer for Center FAB -->
       
       <div class="bottom-nav-item" id="nav-btn-pageKalender" onclick="bukaKalender()" style="margin-left: 35px;">
         <i class="bi bi-calendar-event-fill"></i><span>Riwayat</span>
@@ -431,7 +346,7 @@
       <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="col-md-6 col-lg-5 col-xl-4">
           <div class="text-center mb-4">
-            <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 15px; box-shadow: var(--shadow-sm);">
+            <div style="width: 80px; height: 80px; background: #E8F5E9; color: #55A630; border-radius: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
               <i class="bi bi-hexagon-fill"></i>
             </div>
             <h2 class="fw-bolder text-dark mb-1">SPACE</h2>
@@ -458,11 +373,9 @@
       </div>
     </div>
 
-    <!-- PAGE: DASHBOARD (MOBILE STYLE) -->
+    <!-- PAGE: DASHBOARD -->
     <div id="pageDashboard" class="page">
       <div class="container-mobile">
-        
-        <!-- Header Location & Profile -->
         <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
           <div class="d-flex align-items-center gap-3">
              <div class="act-avatar bg-white shadow-sm border m-0" id="btnAdminDash" style="width: 50px; height: 50px; border-radius: 50%; cursor: pointer;" onclick="switchPage('pageProfil')">
@@ -473,21 +386,20 @@
                <div class="fw-bolder fs-5 text-dark" id="dashNamaUser">Nama User</div>
              </div>
           </div>
-          <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: var(--text-muted); cursor: pointer; position: relative;" onclick="bukaNotifikasi()">
+          <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: #738A73; cursor: pointer; position: relative;" onclick="bukaNotifikasi()">
             <i class="bi bi-bell-fill fs-5"></i>
             <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" id="notifBadge" style="display: none;"></span>
           </div>
         </div>
 
-        <!-- Status Kehadiran Hero Card -->
         <div class="d-flex justify-content-between align-items-center mb-3">
            <h6 class="fw-bolder mb-0 fs-5 text-dark">Status Kehadiran</h6>
-           <a href="javascript:void(0)" class="text-decoration-none small fw-bold" style="color: var(--primary);" onclick="bukaKalender()">Lihat Semua</a>
+           <a href="javascript:void(0)" class="text-decoration-none small fw-bold" style="color: #55A630;" onclick="bukaKalender()">Lihat Semua</a>
         </div>
         <div class="hero-green-card position-relative mb-4">
            <div class="p-4 pt-4 pb-3 text-white">
               <div class="d-flex justify-content-between align-items-start mb-2">
-                 <div class="badge bg-white text-success rounded-pill px-3 py-1 fw-bold shadow-sm" style="color: var(--primary) !important;">Hari Ini</div>
+                 <div class="badge bg-white text-success rounded-pill px-3 py-1 fw-bold shadow-sm" style="color: #55A630 !important;">Hari Ini</div>
                  <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width:30px; height:30px;"><i class="bi bi-clock-fill"></i></div>
               </div>
               <h3 class="fw-bolder mb-1" id="dashJamRealtime">00:00:00 WIB</h3>
@@ -505,13 +417,9 @@
               </div>
            </div>
            
-           <!-- Glass Calendar overlay (Weekly) -->
-           <div class="hero-calendar-glass p-3 d-flex justify-content-between" id="weeklyCalendarOverlay">
-              <!-- JS Generated -->
-           </div>
+           <div class="hero-calendar-glass p-3 d-flex justify-content-between" id="weeklyCalendarOverlay"></div>
         </div>
 
-        <!-- Filter Pills & Recent Activity -->
         <div class="d-flex justify-content-between align-items-center mb-3 mt-4 pt-2">
            <h6 class="fw-bolder mb-0 fs-5 text-dark">Aktivitas Terakhir</h6>
         </div>
@@ -520,11 +428,9 @@
            <div class="pill-tab active" onclick="filterAktivitas('Semua', this)">Semua</div>
            <div class="pill-tab" onclick="filterAktivitas('Absen', this)">Absensi</div>
            <div class="pill-tab" onclick="filterAktivitas('Izin', this)">Riwayat Izin</div>
-           <div class="pill-tab" onclick="alertNotif('Fitur slip gaji belum tersedia.','warning')">Gaji</div>
         </div>
 
         <div id="containerAktivitasTerbaru" class="d-flex flex-column gap-3 mb-4 pb-2">
-           <!-- Activity Cards via JS -->
            <div class="text-muted small text-center py-3">Belum ada aktivitas.</div>
         </div>
 
@@ -536,7 +442,6 @@
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
           <div class="container-mobile mt-2">
-            
             <div class="d-flex align-items-center mb-4">
               <button class="btn btn-white rounded-circle shadow-sm border me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" onclick="switchPage('pageDashboard')">
                 <i class="bi bi-arrow-left fs-5 text-dark"></i>
@@ -546,11 +451,7 @@
                 <p class="text-muted small mb-0">Pemberitahuan & pengingat presensi</p>
               </div>
             </div>
-            
-            <div id="listNotifikasiContainer" class="pb-4">
-               <!-- Diisi via JS -->
-            </div>
-            
+            <div id="listNotifikasiContainer" class="pb-4"></div>
           </div>
         </div>
       </div>
@@ -620,11 +521,10 @@
                 <i class="bi bi-person-bounding-box me-1"></i> Mendeteksi Wajah...
               </div>
 
-              <!-- OVERLAY ERROR KAMERA BARU TANGGUH -->
               <div id="cameraErrorOverlay" class="position-absolute top-0 start-0 w-100 h-100 d-none flex-column align-items-center justify-content-center text-center p-4" style="background: rgba(0,0,0,0.85); z-index: 20;">
                  <i class="bi bi-camera-video-off-fill text-danger mb-2" style="font-size: 3rem;"></i>
                  <h6 class="text-white fw-bold mb-1">Akses Kamera Ditolak / Diblokir</h6>
-                 <p class="text-white-50 small mb-3" id="cameraErrorMessage">Kamera tidak dapat diakses. Jika Anda sedang melihat ini di dalam mode "Preview", browser biasanya memblokir kamera. Silakan buka aplikasi di <b>Tab Baru</b>.</p>
+                 <p class="text-white-50 small mb-3" id="cameraErrorMessage">Kamera tidak dapat diakses.</p>
                  <div class="d-flex gap-2 justify-content-center">
                     <button class="btn btn-sm btn-outline-light rounded-pill px-4 fw-bold" onclick="initCameraOptions()">Coba Lagi</button>
                  </div>
@@ -646,12 +546,12 @@
 
             <div class="row g-3">
               <div class="col-6">
-                <button onclick="prosesAmbilAbsen('Masuk')" class="btn btn-clock w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary);">
+                <button onclick="prosesAmbilAbsen('Masuk')" class="btn btn-clock w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: #E8F5E9; color: #55A630; border: 1px solid #55A630; border-radius:16px;">
                   <i class="bi bi-box-arrow-in-right fs-3 mb-1"></i> <span class="fw-bolder">MASUK</span>
                 </button>
               </div>
               <div class="col-6">
-                <button onclick="prosesAmbilAbsen('Pulang')" class="btn btn-clock w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: #FFE4E6; color: #E11D48; border: 1px solid #E11D48;">
+                <button onclick="prosesAmbilAbsen('Pulang')" class="btn btn-clock w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: #FFE4E6; color: #E11D48; border: 1px solid #E11D48; border-radius:16px;">
                   <i class="bi bi-box-arrow-left fs-3 mb-1"></i> <span class="fw-bolder">PULANG</span>
                 </button>
               </div>
@@ -683,15 +583,13 @@
               <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(1)"><i class="bi bi-chevron-right"></i></button>
             </div>
 
-            <!-- Legenda -->
             <div class="d-flex flex-wrap justify-content-center gap-3 mb-4 small fw-medium text-muted">
               <div class="d-flex align-items-center"><div class="status-dot status-full me-2"></div> Lengkap</div>
               <div class="d-flex align-items-center"><div class="status-dot status-partial me-2"></div> Sebagian</div>
-              <div class="d-flex align-items-center"><div class="status-dot status-leave me-2"></div> Izin</div>
+              <div class="d-flex align-items-center"><div class="status-dot status-leave me-2"></div> Izin/Cuti</div>
               <div class="d-flex align-items-center"><div class="status-dot status-absent me-2"></div> Alpa</div>
             </div>
 
-            <!-- Grid Kalender -->
             <div class="calendar-grid" id="calendarHeader">
               <div class="calendar-day-header">Min</div><div class="calendar-day-header">Sen</div>
               <div class="calendar-day-header">Sel</div><div class="calendar-day-header">Rab</div>
@@ -704,55 +602,92 @@
       </div>
     </div>
 
-    <!-- PAGE: ADMIN - DATA ABSENSI -->
+    <!-- PAGE: ADMIN - DATA ABSENSI & APPROVAL -->
     <div id="pageAdminAbsensi" class="page">
       <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
           <div class="modern-card p-4 mt-2">
+            
             <div class="d-flex align-items-center mb-4">
               <div class="act-avatar m-0 me-3 shadow-sm bg-white border text-primary">
                 <i class="bi bi-clipboard-data"></i>
               </div>
               <div>
-                <h5 class="mb-0 fw-bolder">Data Absensi Tim</h5>
-                <p class="text-muted small mb-0">Pantau kehadiran seluruh karyawan.</p>
-              </div>
-            </div>
-            
-            <div class="row g-2 mb-4 bg-light p-3 rounded-4 border">
-              <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted ms-1">Tanggal</label>
-                <input type="date" id="filterAdminTanggal" class="form-control bg-white shadow-sm">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted ms-1">Posisi</label>
-                <select id="filterAdminPosisi" class="form-select bg-white shadow-sm"><option value="">Semua Posisi</option></select>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted ms-1">Divisi</label>
-                <select id="filterAdminDivisi" class="form-select bg-white shadow-sm"><option value="">Semua Divisi</option></select>
-              </div>
-              <div class="col-md-3 d-flex align-items-end">
-                <button onclick="renderAdminAbsensi()" class="btn-primary-modern w-100 shadow-sm py-2 rounded-3">Terapkan Filter</button>
+                <h5 class="mb-0 fw-bolder">Manajemen Data Tim</h5>
+                <p class="text-muted small mb-0">Pantau kehadiran dan setujui izin karyawan.</p>
               </div>
             </div>
 
-            <div class="table-responsive rounded-4 border">
-              <table class="table table-hover align-middle text-center mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th class="py-3 text-start ps-4">Nama</th>
-                    <th class="py-3">Posisi</th>
-                    <th class="py-3">Divisi</th>
-                    <th class="py-3">Waktu Masuk</th>
-                    <th class="py-3">Waktu Pulang</th>
-                  </tr>
-                </thead>
-                <tbody id="tabelAdminAbsensiBody">
-                  <tr><td colspan="5" class="py-5 text-muted fw-medium">Terapkan filter untuk melihat data.</td></tr>
-                </tbody>
-              </table>
+            <!-- Tab Navigation Admin -->
+            <ul class="nav nav-pills mb-4 border-bottom pb-3 gap-2" id="adminTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill fw-bold" id="tab-absensi" data-bs-toggle="pill" data-bs-target="#content-absensi" type="button" role="tab" style="padding: 10px 24px;">Data Absensi</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-bold" id="tab-approval" data-bs-toggle="pill" data-bs-target="#content-approval" type="button" role="tab" style="padding: 10px 24px;">Persetujuan Izin/Cuti</button>
+              </li>
+            </ul>
+            
+            <div class="tab-content" id="adminTabContent">
+              <!-- Tab Content: Data Absensi -->
+              <div class="tab-pane fade show active" id="content-absensi" role="tabpanel">
+                <div class="row g-2 mb-4 bg-light p-3 rounded-4 border">
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted ms-1">Tanggal</label>
+                    <input type="date" id="filterAdminTanggal" class="form-control bg-white shadow-sm">
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted ms-1">Posisi</label>
+                    <select id="filterAdminPosisi" class="form-select bg-white shadow-sm"><option value="">Semua Posisi</option></select>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted ms-1">Divisi</label>
+                    <select id="filterAdminDivisi" class="form-select bg-white shadow-sm"><option value="">Semua Divisi</option></select>
+                  </div>
+                  <div class="col-md-3 d-flex align-items-end">
+                    <button onclick="renderAdminAbsensi()" class="btn-primary-modern w-100 shadow-sm py-2 rounded-3">Terapkan Filter</button>
+                  </div>
+                </div>
+
+                <div class="table-responsive rounded-4 border">
+                  <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th class="py-3 text-start ps-4">Nama</th>
+                        <th class="py-3">Posisi</th>
+                        <th class="py-3">Divisi</th>
+                        <th class="py-3">Waktu Masuk</th>
+                        <th class="py-3">Waktu Pulang</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tabelAdminAbsensiBody">
+                      <tr><td colspan="5" class="py-5 text-muted fw-medium">Terapkan filter untuk melihat data.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab Content: Persetujuan Izin -->
+              <div class="tab-pane fade" id="content-approval" role="tabpanel">
+                <div class="table-responsive rounded-4 border">
+                  <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th class="py-3 text-start ps-4">Nama & Tanggal</th>
+                        <th class="py-3">Jenis Izin</th>
+                        <th class="py-3">Bukti</th>
+                        <th class="py-3">Status</th>
+                        <th class="py-3">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tabelPersetujuanIzinBody">
+                      <tr><td colspan="5" class="py-5 text-muted fw-medium">Memuat data izin...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -770,7 +705,7 @@
                 </div>
                 <div>
                   <h5 class="mb-0 fw-bolder">Kelola Karyawan</h5>
-                  <p class="text-muted small mb-0">Tambah atau edit data tim.</p>
+                  <p class="text-muted small mb-0">Tambah, edit, nonaktifkan, atau atur tgl masuk.</p>
                 </div>
               </div>
               <button class="btn-primary-modern rounded-pill shadow-sm px-3 py-2" onclick="bukaModalTambah()">
@@ -784,8 +719,8 @@
                   <tr>
                     <th class="py-3">ID</th>
                     <th class="py-3 text-start">Profil Karyawan</th>
-                    <th class="py-3">Jabatan</th>
-                    <th class="py-3">Role</th>
+                    <th class="py-3">Jabatan & Periode</th>
+                    <th class="py-3">Status / Role</th>
                     <th class="py-3">Aksi</th>
                   </tr>
                 </thead>
@@ -799,13 +734,12 @@
       </div>
     </div>
 
-    <!-- PAGE: PROFIL (SESUAI DESAIN GAMBAR) -->
+    <!-- PAGE: PROFIL -->
     <div id="pageProfil" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
           <div class="container-mobile">
             
-            <!-- Top Gradient Card -->
             <div class="profile-header-card text-center mb-4">
               <div class="position-relative d-inline-block mb-3 mt-2" style="cursor: pointer;" onclick="bukaModalEditFoto()">
                 <div class="bg-white text-primary mx-auto shadow-sm border border-3 border-white d-flex align-items-center justify-content-center fw-bold" 
@@ -813,7 +747,6 @@
                   <img id="profilUtamaImg" src="" class="d-none w-100 h-100 object-fit-cover">
                   <span id="profilUtamaInisial">U</span>
                 </div>
-                <!-- Ikon Kamera Kecil Penanda Klik -->
                 <div class="position-absolute bottom-0 end-0 bg-white border shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; transform: translate(5px, -5px);">
                   <i class="bi bi-camera-fill text-primary" style="font-size: 0.8rem;"></i>
                 </div>
@@ -822,7 +755,6 @@
               <p class="text-muted small mb-0 fw-medium"><span id="profilInfoTambahan">-</span></p>
             </div>
 
-            <!-- Menu List "Umum" -->
             <h5 class="fw-bold text-dark mb-3 px-1">Umum</h5>
             <div class="d-flex flex-column gap-3 pb-4">
                
@@ -935,29 +867,7 @@
         <div class="modal-body py-4 px-3">
           <i class="bi bi-headset text-primary mb-3" style="font-size: 3.5rem;"></i>
           <h5 class="fw-bolder text-dark mb-2">Pusat Bantuan</h5>
-          <p class="text-muted small mb-4">Aplikasi ini dikembangkan oleh <b>Yasinisme Web Dev</b>. Jika Anda mengalami masalah terkait sistem absensi, silakan hubungi Developer melalui kontak di bawah ini:</p>
-          
-          <div class="bg-light rounded-4 p-3 mb-4 text-start border shadow-sm">
-             <div class="mb-3 d-flex align-items-center">
-                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border shadow-sm me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
-                   <i class="bi bi-envelope-fill text-primary fs-5"></i>
-                </div>
-                <div>
-                   <span class="d-block small text-muted fw-bold" style="font-size: 0.7rem;">Email Support</span>
-                   <a href="mailto:yasinismewebdev@gmail.com" class="text-dark fw-bold small text-decoration-none" style="word-break: break-all;">yasinismewebdev@gmail.com</a>
-                </div>
-             </div>
-             <div class="d-flex align-items-center">
-                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border shadow-sm me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
-                   <i class="bi bi-whatsapp text-success fs-5"></i>
-                </div>
-                <div>
-                   <span class="d-block small text-muted fw-bold" style="font-size: 0.7rem;">WhatsApp Dev</span>
-                   <a href="https://wa.me/6285182320091" target="_blank" class="text-dark fw-bold small text-decoration-none">0851-8232-0091</a>
-                </div>
-             </div>
-          </div>
-          
+          <p class="text-muted small mb-4">Aplikasi ini dikembangkan oleh <b>Yasinisme Web Dev</b>. Jika Anda mengalami masalah terkait sistem absensi, silakan hubungi Developer.</p>
           <button class="btn btn-primary-modern w-100 rounded-pill fw-bold py-2 shadow-sm" data-bs-dismiss="modal">Tutup Pesan</button>
         </div>
       </div>
@@ -1001,7 +911,7 @@
           </div>
 
           <div id="detailContainerIzin" class="d-none">
-            <div class="absen-card mb-0 shadow-sm border border-primary border-opacity-25 rounded-4 p-3 mt-3" style="background: var(--primary-light);">
+            <div class="absen-card mb-0 shadow-sm border border-primary border-opacity-25 rounded-4 p-3 mt-3" style="background: #E8F5E9;">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="fw-bold text-primary small"><i class="bi bi-envelope-paper me-1"></i> JENIS IZIN</span>
                 <span class="fw-bold fs-5 text-primary" id="detailJenisIzin">-</span>
@@ -1029,7 +939,7 @@
     </div>
   </div>
 
-  <!-- Modal Karyawan & Hapus -->
+  <!-- Modal Karyawan -->
   <div class="modal fade" id="modalKaryawan" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content light-modal rounded-4">
@@ -1060,7 +970,7 @@
                   <input type="text" class="form-control" id="inputPassword" required>
                 </div>
               </div>
-              <div class="row g-3">
+              <div class="row g-3 mb-3">
                 <div class="col-md-4">
                   <label class="form-label small fw-bold text-muted ms-1">Posisi</label>
                   <input type="text" class="form-control" id="inputPosisi" required>
@@ -1075,6 +985,23 @@
                     <option value="User">User</option>
                     <option value="Admin">Admin</option>
                   </select>
+                </div>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold text-muted ms-1">Tgl Diterima Kerja</label>
+                  <input type="date" class="form-control" id="inputTglMasuk" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold text-muted ms-1">Status Karyawan</label>
+                  <select class="form-select" id="inputStatusAktif" onchange="toggleTglBerhenti()">
+                    <option value="Aktif">Aktif</option>
+                    <option value="Nonaktif">Nonaktif / Keluar</option>
+                  </select>
+                </div>
+                <div class="col-md-4 d-none" id="containerTglBerhenti">
+                  <label class="form-label small fw-bold text-muted ms-1">Tgl Berhenti</label>
+                  <input type="date" class="form-control" id="inputTglBerhenti">
                 </div>
               </div>
            </form>
@@ -1110,14 +1037,10 @@
     // ==========================================
     // KONFIGURASI GOOGLE APPS SCRIPT (GAS) URL
     // ==========================================
-    // Masukkan URL Web App Apps Script Anda di bawah ini
+    // PASTIKAN MENGGANTI URL DI BAWAH INI DENGAN DEPLOYMENT BARU DARI SCRIPT ANDA
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxsmLcSk7RrpPHxX02spJaHIqAlUG2UEU6xZYZCkDBaHUJW61Ew9WQRDJDofdwRRtA5EA/exec";
 
-    // Fungsi Helper API untuk melakukan request ke Backend GAS
     async function callGAS(action, data = {}) {
-      if (!GAS_URL || GAS_URL.includes("MASUKKAN_URL")) {
-         throw new Error("URL Google Apps Script belum dikonfigurasi di frontend!");
-      }
       try {
         const response = await fetch(GAS_URL, {
           method: 'POST',
@@ -1131,17 +1054,15 @@
            throw new Error(result.message || "Terjadi kesalahan pada server");
         }
       } catch (error) {
-        console.error("Fetch Error:", error);
         throw error;
       }
     }
 
-    // Fungsi Helper Formatter Tanggal & Waktu (Mengatasi Bug 1899 dan Timezone UTC)
     function formatDateString(dateVal) {
         if (!dateVal) return "";
         let dStr = String(dateVal);
         if (dStr.includes('T')) {
-            let d = new Date(dStr); // Konversi kembali ke zona waktu lokal (WIB)
+            let d = new Date(dStr);
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
         return dStr.substring(0, 10);
@@ -1151,7 +1072,7 @@
         if (!waktuVal) return "--:--";
         let wStr = String(waktuVal);
         if (wStr.includes('T')) {
-            let d = new Date(wStr); // Extract jam lokal dari data raw 1899
+            let d = new Date(wStr);
             return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
         }
         if (wStr.length > 15 && wStr.includes(':')) {
@@ -1161,23 +1082,13 @@
         return wStr.substring(0, 5);
     }
 
-    // ==========================================
-    // INTEGRASI FRONTEND LOGIC
-    // ==========================================
-    
     let DB_USERS = [];
     let DB_ABSENSI = [];
-    let currentUser = { id: "", nama: "", posisi: "", divisi: "", role: "", fotoProfil: "" };
+    let currentUser = { id: "", nama: "", posisi: "", divisi: "", role: "", fotoProfil: "", tglMasuk: "", statusAktif: "", tglBerhenti: "" };
 
-    function simpanSesi() {
-        localStorage.setItem('gks_active_user', JSON.stringify(currentUser));
-    }
+    function simpanSesi() { localStorage.setItem('gks_active_user', JSON.stringify(currentUser)); }
+    function hapusSesi() { localStorage.removeItem('gks_active_user'); }
 
-    function hapusSesi() {
-        localStorage.removeItem('gks_active_user');
-    }
-
-    // Auto Login & Sync Database on Load
     window.addEventListener('DOMContentLoaded', () => {
         const savedUser = localStorage.getItem('gks_active_user');
         if (savedUser) {
@@ -1195,14 +1106,12 @@
             const data = await callGAS('getInitData');
             DB_USERS = data.users;
             
-            // Format ulang tanggal dan waktu agar terhindar dari bug zona waktu UTC/1899
             DB_ABSENSI = data.absensi.map(a => ({
                 ...a,
                 tanggal: formatDateString(a.tanggal),
                 waktu: formatTimeString(a.waktu)
             }));
             
-            // Auto-refresh tables if they are open
             if(document.getElementById('pageDashboard').classList.contains('active')) {
                 const pills = document.querySelectorAll('#aktivitasPills .pill-tab');
                 let activeType = 'Semua';
@@ -1210,7 +1119,7 @@
                 populateAktivitasDashboard(activeType);
                 renderWeekCalendar();
             }
-            if(document.getElementById('pageAdminAbsensi').classList.contains('active')) renderAdminAbsensi();
+            if(document.getElementById('pageAdminAbsensi').classList.contains('active')) { renderAdminAbsensi(); renderPersetujuanIzin(); }
             if(document.getElementById('pageManajemen').classList.contains('active')) renderTabelKaryawan();
             if(document.getElementById('pageNotifikasi').classList.contains('active')) renderNotifikasi();
             if(document.getElementById('pageKalender').classList.contains('active')) renderCalendar();
@@ -1220,13 +1129,11 @@
     }
 
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
     let localStream = null;
     let liveKoordinat = "Memuat lokasi...";
     let intervalWatermark = null;
     let intervalDashboard = null;
     let currentDetailDate = ""; 
-
     let isFaceDetected = false;
     let faceDetectInterval = null;
     let modelsLoaded = false;
@@ -1242,11 +1149,9 @@
     document.getElementById('filterBulanUser').value = currentMonthStr;
     document.getElementById('filterAdminTanggal').value = currentDateStr;
 
-    // Trigger Login Button with Enter Key
     document.getElementById('loginEmail').addEventListener('keypress', function (e) { if (e.key === 'Enter') document.getElementById('btnLogin').click(); });
     document.getElementById('loginPassword').addEventListener('keypress', function (e) { if (e.key === 'Enter') document.getElementById('btnLogin').click(); });
 
-    // Custom Alert / Notification Logic
     function alertNotif(msg, type = "info") {
       const banner = document.getElementById('globalNotif');
       const content = document.getElementById('globalNotifContent');
@@ -1268,11 +1173,9 @@
         try {
             const loadPromise = faceapi.nets.tinyFaceDetector.loadFromUri('https://vladmandic.github.io/face-api/model/');
             const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 8000));
-            
             await Promise.race([loadPromise, timeoutPromise]);
             modelsLoaded = true;
         } catch (e) {
-            console.warn("Gagal/Timeout memuat model deteksi wajah.", e);
             useFaceDetection = false;
             document.getElementById('faceIndicator').classList.add('d-none');
         }
@@ -1293,15 +1196,11 @@
           const navBarBottom = document.getElementById('bottomNav');
           
           if(pageId === 'pageLogin') {
-            navBarTop.classList.remove('d-lg-block'); 
-            navBarTop.classList.add('d-none'); 
-            navBarBottom.classList.remove('d-lg-none', 'd-block');
-            navBarBottom.classList.add('d-none'); 
+            navBarTop.classList.remove('d-lg-block'); navBarTop.classList.add('d-none'); 
+            navBarBottom.classList.remove('d-lg-none', 'd-block'); navBarBottom.classList.add('d-none'); 
           } else if (currentUser.id) {
-            navBarTop.classList.remove('d-none'); 
-            navBarTop.classList.add('d-lg-block'); 
-            navBarBottom.classList.remove('d-none'); 
-            navBarBottom.classList.add('d-lg-none', 'd-block'); 
+            navBarTop.classList.remove('d-none'); navBarTop.classList.add('d-lg-block'); 
+            navBarBottom.classList.remove('d-none'); navBarBottom.classList.add('d-lg-none', 'd-block'); 
           }
 
           document.querySelectorAll('.navbar-custom .nav-link').forEach(link => link.classList.remove('active'));
@@ -1315,10 +1214,7 @@
           if(pageId === 'pageDashboard') {
               mulaiJamDashboard();
               const pills = document.querySelectorAll('#aktivitasPills .pill-tab');
-              if(pills.length > 0) {
-                  pills.forEach(el => el.classList.remove('active'));
-                  pills[0].classList.add('active');
-              }
+              if(pills.length > 0) { pills.forEach(el => el.classList.remove('active')); pills[0].classList.add('active'); }
               populateAktivitasDashboard('Semua');
               renderWeekCalendar();
           } else {
@@ -1333,18 +1229,14 @@
           } else if (pageId === 'pageAbsen' && currentUser.id !== "") {
               document.getElementById('loadingText').innerText = "Menyiapkan Kamera...";
               document.getElementById('loadingSpinner').style.display = 'flex';
-              
-              loadFaceModels().catch(e => {
-                  console.warn("FaceAPI gagal diload, beralih ke mode tanpa deteksi wajah.", e);
-                  useFaceDetection = false;
-              }).finally(() => {
+              loadFaceModels().catch(e => { useFaceDetection = false; }).finally(() => {
                   document.getElementById('loadingSpinner').style.display = 'none';
                   initCameraOptions();
               });
           }
 
           if(pageId === 'pageManajemen') renderTabelKaryawan(); 
-          if(pageId === 'pageAdminAbsensi') renderAdminAbsensi();
+          if(pageId === 'pageAdminAbsensi') { renderAdminAbsensi(); renderPersetujuanIzin(); }
 
       } catch(errorNavigasi) {
           console.error("Navigation error:", errorNavigasi);
@@ -1362,7 +1254,6 @@
 
       try {
           const user = await callGAS('prosesLoginGAS', { email: inputEmail, password: inputPassword });
-          
           if(user) {
               setupUserSession(user);
               await sinkronisasiDataServer(); 
@@ -1400,7 +1291,7 @@
     }
     
     function logout() {
-       currentUser = { id: "", nama: "", posisi: "", divisi: "", role: "", fotoProfil: "" };
+       currentUser = { id: "", nama: "", posisi: "", divisi: "", role: "", fotoProfil: "", tglMasuk: "", statusAktif: "", tglBerhenti: "" };
        document.getElementById('formLogin').reset();
        if(intervalDashboard) clearInterval(intervalDashboard);
        hapusSesi();
@@ -1493,7 +1384,13 @@
             const isIzin = a.tipe === 'Izin';
             const iconBg = isIzin ? 'bg-primary bg-opacity-10 text-primary' : (a.tipe === 'Masuk' ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger');
             const iconStr = isIzin ? '<i class="bi bi-envelope-paper-fill"></i>' : (a.tipe === 'Masuk' ? '<i class="bi bi-box-arrow-in-right"></i>' : '<i class="bi bi-box-arrow-left"></i>');
-            const titleStr = isIzin ? `Pengajuan Izin (${a.statusIzin})` : `Absen ${a.tipe}`;
+            let titleStr = isIzin ? `Pengajuan Izin` : `Absen ${a.tipe}`;
+            if(isIzin) {
+               const stIzin = a.statusIzin.split(" - ")[0]; // Get 'Sakit' / 'Cuti' part
+               const appStatus = a.statusIzin.split(" - ").length > 1 ? a.statusIzin : "Pending";
+               titleStr = `Izin ${stIzin} (${appStatus})`;
+            }
+
             const timeStr = isIzin ? formatTanggalIndo(a.tanggal) : `${a.waktu} WIB • ${formatTanggalIndo(a.tanggal)}`;
             
             container.innerHTML += `
@@ -1512,9 +1409,7 @@
         });
     }
 
-    function bukaNotifikasi() {
-        switchPage('pageNotifikasi');
-    }
+    function bukaNotifikasi() { switchPage('pageNotifikasi'); }
 
     function renderNotifikasi() {
         const container = document.getElementById('listNotifikasiContainer');
@@ -1522,12 +1417,17 @@
 
         const today = new Date();
         let hasNotifs = false;
+        const tglMasukUser = currentUser.tglMasuk || "2000-01-01";
+        const tglKeluarUser = (currentUser.statusAktif === 'Nonaktif' && currentUser.tglBerhenti) ? currentUser.tglBerhenti : "2099-12-31";
 
         for (let i = 0; i < 7; i++) {
             const d = new Date(today);
             d.setDate(today.getDate() - i);
             const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             
+            // Skip notifications for days before joined or after left
+            if (dateStr < tglMasukUser || dateStr > tglKeluarUser) continue;
+
             const records = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && a.tanggal === dateStr);
             
             let dayTitle = i === 0 ? "Hari Ini" : (i === 1 ? "Kemarin" : formatTanggalIndo(dateStr));
@@ -1541,7 +1441,12 @@
                 if (!masuk && !izin) dayNotifsHTML += buatKartuNotif('bi-exclamation-triangle-fill', 'text-warning', 'bg-warning', 'Belum Absen Masuk', 'Anda belum melakukan absen masuk hari ini. Jangan lupa presensi!', 'Peringatan');
                 if (masuk) dayNotifsHTML += buatKartuNotif('bi-box-arrow-in-right', 'text-success', 'bg-success', 'Absen Masuk Berhasil', `Sistem telah mencatat kehadiran masuk Anda.`, masuk.waktu + ' WIB');
                 if (pulang) dayNotifsHTML += buatKartuNotif('bi-box-arrow-left', 'text-danger', 'bg-danger', 'Absen Pulang Berhasil', `Kerja bagus hari ini! Waktu pulang telah tercatat.`, pulang.waktu + ' WIB');
-                if (izin) dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', 'text-primary', 'bg-primary', `Pengajuan Izin: ${izin.statusIzin}`, `Keterangan: ${izin.keterangan}`, 'Disetujui');
+                if (izin) {
+                   const splitSt = izin.statusIzin.split(" - ");
+                   const statusName = splitSt.length > 1 ? splitSt[0] : izin.statusIzin;
+                   const stApproval = splitSt.length > 1 ? splitSt[1] : "Pending";
+                   dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', 'text-primary', 'bg-primary', `Pengajuan Izin: ${statusName}`, `Status: ${stApproval}. Ket: ${izin.keterangan}`, 'Info Izin');
+                }
             } else { 
                 const masuk = records.find(a => a.tipe === 'Masuk');
                 const izin = records.find(a => a.tipe === 'Izin');
@@ -1552,7 +1457,13 @@
                      else dayNotifsHTML += buatKartuNotif('bi-calendar-x', 'text-secondary', 'bg-secondary', 'Akhir Pekan / Libur', 'Waktu istirahat Anda.', 'Sistem');
                 } else {
                     if (masuk) dayNotifsHTML += buatKartuNotif('bi-check-circle-fill', 'text-success', 'bg-success', 'Kehadiran Tercatat', `Anda telah absen masuk pada ${masuk.waktu} WIB.`, 'Selesai');
-                    if (izin) dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', 'text-primary', 'bg-primary', `Izin/Cuti (${izin.statusIzin})`, `Status izin Anda pada hari ini telah terekam.`, 'Selesai');
+                    if (izin) {
+                       const splitSt = izin.statusIzin.split(" - ");
+                       const stApproval = splitSt.length > 1 ? splitSt[1] : "Pending";
+                       let color = stApproval === 'Disetujui' ? 'bg-success' : (stApproval === 'Ditolak' ? 'bg-danger' : 'bg-primary');
+                       let textCol = color.replace('bg-', 'text-');
+                       dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', textCol, color, `Izin/Cuti`, `Status pengajuan: ${stApproval}.`, 'Selesai');
+                    }
                 }
             }
 
@@ -1605,21 +1516,17 @@
       }
 
       const payload = {
-          idKaryawan: currentUser.id,
-          nama: currentUser.nama,
-          tanggal: tgl, 
-          tipe: "Izin",
-          keterangan: jenis + " - " + ket,
-          fotoBase64: buktiDataUrl,
-          koordinat: "-"
+          idKaryawan: currentUser.id, nama: currentUser.nama, tanggal: tgl,  
+          tipe: "Izin", keterangan: jenis + " - " + ket,
+          fotoBase64: buktiDataUrl, koordinat: "-"
       };
 
       try {
           await callGAS('simpanAbsenGAS', payload);
-          await sinkronisasiDataServer(); // Menunggu data baru tertarik penuh
+          await sinkronisasiDataServer(); 
           document.getElementById('formPengajuanIzin').reset(); toggleSuratDokter();
           document.getElementById('loadingSpinner').style.display = 'none';
-          alertNotif(`Pengajuan ${jenis} berhasil tersimpan!`, "success");
+          alertNotif(`Pengajuan ${jenis} berhasil dikirim dan menunggu persetujuan.`, "success");
           switchPage('pageDashboard');
       } catch (err) {
           document.getElementById('loadingSpinner').style.display = 'none';
@@ -1642,13 +1549,19 @@
       const daysInMonth = new Date(y, m, 0).getDate();
       const todayStr = `${skrg.getFullYear()}-${String(skrg.getMonth()+1).padStart(2,'0')}-${String(skrg.getDate()).padStart(2,'0')}`;
 
+      const tglMasukUser = currentUser.tglMasuk || "2000-01-01";
+      const tglKeluarUser = (currentUser.statusAktif === 'Nonaktif' && currentUser.tglBerhenti) ? currentUser.tglBerhenti : "2099-12-31";
+
       const usrAbs = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && String(a.tanggal).startsWith(val));
       const absMap = {};
       usrAbs.forEach(a => {
-          if(!absMap[a.tanggal]) absMap[a.tanggal] = { masuk: false, pulang: false, izin: false };
+          if(!absMap[a.tanggal]) absMap[a.tanggal] = { masuk: false, pulang: false, izin: false, statusIzin: "" };
           if(a.tipe === 'Masuk') absMap[a.tanggal].masuk = true;
           if(a.tipe === 'Pulang') absMap[a.tanggal].pulang = true;
-          if(a.tipe === 'Izin') absMap[a.tanggal].izin = true;
+          if(a.tipe === 'Izin') { 
+            absMap[a.tanggal].izin = true; 
+            absMap[a.tanggal].statusIzin = a.statusIzin; 
+          }
       });
 
       const calBody = document.getElementById('calendarBody'); calBody.innerHTML = '';
@@ -1656,9 +1569,26 @@
       for(let d = 1; d <= daysInMonth; d++) {
         const dStr = String(d).padStart(2, '0'); const loopDate = `${y}-${String(m).padStart(2,'0')}-${dStr}`;
         const data = absMap[loopDate]; let dot = '';
+        
         if (data) {
-            if (data.izin) dot = 'status-leave'; else if (data.masuk && data.pulang) dot = 'status-full'; else dot = 'status-partial'; 
-        } else if (loopDate < todayStr) dot = 'status-absent'; 
+            let izinDitolak = false;
+            if(data.izin) {
+               // Periksa status Izin
+               const stText = data.statusIzin;
+               if(stText === "Pending" || stText === "Disetujui") { dot = 'status-leave'; }
+               else if(stText === "Ditolak") { izinDitolak = true; } 
+            }
+            if(!dot) { // Bukan izin yg disetujui/pending
+                if (data.masuk && data.pulang) dot = 'status-full'; 
+                else if (data.masuk || data.pulang) dot = 'status-partial';
+                else if (izinDitolak) dot = 'status-absent'; // Izin ditolak = alpa
+            }
+        } 
+        // Jika tidak ada data, cek apakah hari kerja dan diawasi
+        else if (loopDate < todayStr && loopDate >= tglMasukUser && loopDate <= tglKeluarUser) {
+           const dLoop = new Date(loopDate).getDay();
+           if(dLoop !== 0 && dLoop !== 6) { dot = 'status-absent'; } // Sabtu-Minggu tidak dihitung alpa
+        } 
 
         calBody.innerHTML += `<div class="calendar-day shadow-sm" onclick="lihatDetailAbsen('${loopDate}', '${dot}')"><div class="calendar-date text-dark">${d}</div>${dot ? `<div class="status-dot ${dot}"></div>` : ''}</div>`;
       }
@@ -1680,21 +1610,23 @@
       else if(statusDot === 'status-partial') { badge.className = 'badge bg-warning text-dark px-3 py-2 mt-1 rounded-pill'; badge.innerHTML = '<i class="bi bi-exclamation-circle-fill me-1"></i>Sebagian'; }
       else if(statusDot === 'status-absent') { badge.className = 'badge bg-danger text-white px-3 py-2 mt-1 rounded-pill'; badge.innerHTML = '<i class="bi bi-x-circle-fill me-1"></i>Alpa / Tidak Absen'; }
       else if(statusDot === 'status-leave') { badge.className = 'badge bg-primary text-white px-3 py-2 mt-1 rounded-pill'; badge.innerHTML = '<i class="bi bi-envelope-paper-fill me-1"></i>Izin/Cuti'; }
-      else { badge.className = 'badge bg-secondary bg-opacity-25 text-muted border px-3 py-2 mt-1 rounded-pill'; badge.innerHTML = 'Belum Ada Data'; }
+      else { badge.className = 'badge bg-secondary bg-opacity-25 text-muted border px-3 py-2 mt-1 rounded-pill'; badge.innerHTML = 'Libur / Tidak Ada Data'; }
 
       if(statusDot === 'status-leave') {
          cAbsen.classList.add('d-none'); cIzin.classList.remove('d-none');
          const dIzin = DB_ABSENSI.find(a => a.idKaryawan === currentUser.id && a.tanggal === tgl && a.tipe === 'Izin');
-         document.getElementById('detailJenisIzin').innerText = dIzin ? dIzin.statusIzin : "-";
-         document.getElementById('detailKeteranganIzin').innerText = dIzin ? dIzin.keterangan : "-";
+         let splitSt = dIzin ? dIzin.keterangan.split(" - ") : ["-","-"];
+         
+         document.getElementById('detailJenisIzin').innerText = dIzin ? `${splitSt[0]} (${dIzin.statusIzin})` : "-";
+         document.getElementById('detailKeteranganIzin').innerText = dIzin ? splitSt[1] : "-";
          
          const cBukti = document.getElementById('detailContainerBukti');
-         if (dIzin && dIzin.statusIzin === 'Sakit' && dIzin.bukti && dIzin.bukti !== "-") {
+         if (dIzin && splitSt[0] === 'Sakit' && dIzin.bukti && dIzin.bukti !== "-") {
             cBukti.classList.remove('d-none'); document.getElementById('linkBuktiIzin').href = dIzin.bukti;
          } else cBukti.classList.add('d-none');
 
          const upSect = document.getElementById('updateBuktiSection');
-         if (dIzin && dIzin.statusIzin === 'Sakit') { 
+         if (dIzin && splitSt[0] === 'Sakit') { 
              upSect.classList.remove('d-none'); 
              document.getElementById('updateSuratDokterInput').value = ""; 
          } else { upSect.classList.add('d-none'); }
@@ -1730,7 +1662,7 @@
             document.getElementById('detailContainerBukti').classList.remove('d-none');
             document.getElementById('linkBuktiIzin').href = urlDrive;
             alertNotif("Surat dokter berhasil diperbarui!", "success");
-            await sinkronisasiDataServer(); // Menunggu data baru tertarik
+            await sinkronisasiDataServer();
             btn.innerHTML = orig; btn.disabled = false;
          } catch (e) { 
             alertNotif("Gagal memproses file. " + e.message, "danger"); 
@@ -1822,9 +1754,7 @@
             errOverlay.classList.remove('d-none');
             errOverlay.classList.add('d-flex');
             const errMsg = document.getElementById('cameraErrorMessage');
-            if (errMsg && pesanError) {
-                errMsg.innerHTML = pesanError;
-            }
+            if (errMsg && pesanError) errMsg.innerHTML = pesanError;
         }
     }
 
@@ -1887,13 +1817,10 @@
              }
           } catch(errBypass) {
              console.error("Kamera ditolak total:", errBypass.name, errBypass.message);
-             
              let pesanPeringatan = "Kamera tidak dapat diakses. Jika Anda sedang melihat ini di dalam sistem Preview, browser secara otomatis memblokir kamera untuk keamanan. <br><br><b>Silakan buka aplikasi di TAB BARU.</b>";
-             
              if (errBypass.name === "NotAllowedError" || errBypass.name === "PermissionDeniedError") {
                  pesanPeringatan = "Anda telah menolak akses kamera. Harap izinkan kamera di pengaturan browser/URL bar, kemudian muat ulang halaman.";
              }
-             
              tampilkanErrorKamera(pesanPeringatan);
           }
       }
@@ -1948,20 +1875,16 @@
       const fotoBase64 = canvasElement.toDataURL('image/jpeg', 0.6);
 
       const payload = {
-          idKaryawan: currentUser.id,
-          nama: currentUser.nama,
-          tipe: tipe,
-          keterangan: "-",
-          fotoBase64: fotoBase64,
-          koordinat: koordinat
+          idKaryawan: currentUser.id, nama: currentUser.nama, tipe: tipe,
+          keterangan: "-", fotoBase64: fotoBase64, koordinat: koordinat
       };
 
       try {
           await callGAS('simpanAbsenGAS', payload);
-          await sinkronisasiDataServer(); // Menunggu data terbaru tertarik dari server
+          await sinkronisasiDataServer(); 
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif(`Berhasil absen ${tipe} pada ${strWaktu} WIB`, "success");
-          switchPage('pageDashboard'); // Akan terupdate dengan data terbaru
+          switchPage('pageDashboard'); 
       } catch(err) {
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal: " + err.message, "danger");
@@ -1979,7 +1902,11 @@
 
       DB_USERS.forEach(u => {
          let badgeAkses = (u.role === 'Admin' || u.role === 'SuperAdmin') ? 'bg-primary' : 'bg-secondary text-white-50';
+         let badgeAktif = u.statusAktif === 'Aktif' ? 'bg-success' : 'bg-danger';
          let disabledBtn = (u.id === currentUser.id) ? 'disabled' : ''; 
+         let infoTgl = `<small class="text-muted d-block mt-1">Masuk: ${u.tglMasuk}</small>`;
+         if(u.statusAktif === 'Nonaktif' && u.tglBerhenti) infoTgl += `<small class="text-danger d-block">Keluar: ${u.tglBerhenti}</small>`;
+
          tbody.innerHTML += `
            <tr>
              <td class="fw-bold text-dark">${u.id}</td>
@@ -1988,10 +1915,13 @@
                 <div class="small text-muted ms-4 ps-2">${u.email}</div>
              </td>
              <td class="text-muted">
-                <span class="d-block fw-bold">${u.posisi}</span>
-                <span class="badge bg-light text-muted border mt-1" style="font-size:0.7rem;">${u.divisi}</span>
+                <span class="d-block fw-bold">${u.posisi} <span class="badge bg-light text-muted border fw-normal">${u.divisi}</span></span>
+                ${infoTgl}
              </td>
-             <td><span class="badge ${badgeAkses} px-3 py-1 rounded-pill">${u.role}</span></td>
+             <td>
+                <span class="badge ${badgeAkses} px-2 py-1 rounded-pill mb-1 d-block w-75 mx-auto">${u.role}</span>
+                <span class="badge ${badgeAktif} px-2 py-1 rounded-pill d-block w-75 mx-auto">${u.statusAktif}</span>
+             </td>
              <td>
                <button onclick="bukaModalEdit('${u.id}')" class="btn btn-sm btn-light border rounded-circle me-1" title="Edit Data"><i class="bi bi-pencil-fill text-info"></i></button>
                <button onclick="bukaModalHapus('${u.id}')" class="btn btn-sm btn-light border rounded-circle ${disabledBtn}" title="Hapus Data"><i class="bi bi-trash-fill text-danger"></i></button>
@@ -2001,9 +1931,19 @@
       });
     }
 
+    function toggleTglBerhenti() {
+       const stat = document.getElementById('inputStatusAktif').value;
+       const cont = document.getElementById('containerTglBerhenti');
+       if(stat === 'Nonaktif') cont.classList.remove('d-none');
+       else cont.classList.add('d-none');
+    }
+
     function bukaModalTambah() {
       document.getElementById('formKaryawan').reset();
       document.getElementById('editUserId').value = ""; document.getElementById('inputID').readOnly = false;
+      document.getElementById('inputTglMasuk').value = currentDateStr; // Default masuk hari ini
+      document.getElementById('inputStatusAktif').value = "Aktif";
+      toggleTglBerhenti();
       document.getElementById('modalKaryawanTitle').innerHTML = '<i class="bi bi-person-plus-fill me-2 text-primary"></i>Tambah Karyawan';
       if(!modalKaryawanObj) modalKaryawanObj = new bootstrap.Modal(document.getElementById('modalKaryawan'));
       modalKaryawanObj.show();
@@ -2014,6 +1954,11 @@
       document.getElementById('editUserId').value = user.id; document.getElementById('inputID').value = user.id; document.getElementById('inputID').readOnly = true; 
       document.getElementById('inputNama').value = user.nama; document.getElementById('inputEmail').value = user.email; document.getElementById('inputPassword').value = user.password;
       document.getElementById('inputPosisi').value = user.posisi; document.getElementById('inputDivisi').value = user.divisi; document.getElementById('inputRole').value = user.role;
+      document.getElementById('inputTglMasuk').value = user.tglMasuk || "";
+      document.getElementById('inputStatusAktif').value = user.statusAktif || "Aktif";
+      document.getElementById('inputTglBerhenti').value = user.tglBerhenti || "";
+      toggleTglBerhenti();
+
       document.getElementById('modalKaryawanTitle').innerHTML = '<i class="bi bi-pencil-square me-2 text-info"></i>Edit Karyawan';
       if(!modalKaryawanObj) modalKaryawanObj = new bootstrap.Modal(document.getElementById('modalKaryawan'));
       modalKaryawanObj.show();
@@ -2024,13 +1969,19 @@
       const idKaryawan = document.getElementById('inputID').value.trim(); const nama = document.getElementById('inputNama').value.trim();
       const email = document.getElementById('inputEmail').value.trim(); const password = document.getElementById('inputPassword').value;
       const posisi = document.getElementById('inputPosisi').value.trim(); const divisi = document.getElementById('inputDivisi').value.trim(); const role = document.getElementById('inputRole').value;
+      const tglMasuk = document.getElementById('inputTglMasuk').value;
+      const statusAktif = document.getElementById('inputStatusAktif').value;
+      const tglBerhenti = document.getElementById('inputTglBerhenti').value;
       
-      if (!idKaryawan || !nama || !email || !password || !posisi || !divisi) { alertNotif("Mohon lengkapi form.", "warning"); return; }
+      if (!idKaryawan || !nama || !email || !password || !posisi || !divisi || !tglMasuk) { alertNotif("Mohon lengkapi form utama.", "warning"); return; }
+      if (statusAktif === 'Nonaktif' && !tglBerhenti) { alertNotif("Tgl berhenti wajib diisi jika Nonaktif.", "warning"); return; }
+
       document.getElementById('loadingText').innerText = "Menyimpan Data..."; document.getElementById('loadingSpinner').style.display = 'flex';
 
       const payload = {
           id: idKaryawan, nama: nama, email: email, 
-          posisi: posisi, divisi: divisi, role: role, password: password
+          posisi: posisi, divisi: divisi, role: role, password: password,
+          tglMasuk: tglMasuk, statusAktif: statusAktif, tglBerhenti: (statusAktif==='Aktif' ? "" : tglBerhenti)
       };
 
       try {
@@ -2066,7 +2017,7 @@
       }
     }
 
-    function bukaAdminAbsensi() { switchPage('pageAdminAbsensi'); renderAdminAbsensi(); }
+    function bukaAdminAbsensi() { switchPage('pageAdminAbsensi'); renderAdminAbsensi(); renderPersetujuanIzin(); }
 
     function populateAdminFilters() {
       const posSet = new Set(); const divSet = new Set();
@@ -2093,6 +2044,11 @@
       tbody.innerHTML = ''; let rowCount = 0;
       DB_USERS.forEach(user => {
          if(posFilter && user.posisi !== posFilter) return; if(divFilter && user.divisi !== divFilter) return;
+         
+         // Ignore inactive users dynamically (if viewing a date after they left, or before they joined)
+         if (tglFilter < user.tglMasuk) return; 
+         if (user.statusAktif === 'Nonaktif' && user.tglBerhenti && tglFilter > user.tglBerhenti) return;
+
          const dataAbsen = groupedData[user.id] || { masuk: "<span class='text-muted'>-</span>", pulang: "<span class='text-muted'>-</span>" };
          tbody.innerHTML += `
            <tr>
@@ -2110,8 +2066,78 @@
       if(rowCount === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-5 text-muted"><i class="bi bi-inbox fs-2 d-block mb-2"></i>Tidak ada data sesuai filter.</td></tr>`; }
     }
 
+    function renderPersetujuanIzin() {
+      const tbody = document.getElementById('tabelPersetujuanIzinBody');
+      const izinData = DB_ABSENSI.filter(a => a.tipe === 'Izin').reverse(); // Show newest first
+      
+      tbody.innerHTML = '';
+      if(izinData.length === 0) {
+         tbody.innerHTML = `<tr><td colspan="5" class="py-5 text-muted">Belum ada data pengajuan Izin/Cuti.</td></tr>`;
+         return;
+      }
+
+      izinData.forEach(a => {
+         let infoUser = DB_USERS.find(u => u.id === a.idKaryawan);
+         let namaUser = infoUser ? infoUser.nama : a.nama;
+         
+         let buktiBtn = (a.bukti && a.bukti !== "-") ? `<a href="${a.bukti}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3"><i class="bi bi-image me-1"></i> Lihat</a>` : `<span class="text-muted small">-</span>`;
+         
+         let st = a.statusIzin;
+         let badgeStatus = '<span class="badge bg-warning text-dark px-3 py-1 rounded-pill">Pending</span>';
+         let actionBtns = `
+           <button class="btn btn-sm btn-success rounded-circle me-1" title="Setujui" onclick="eksekusiApprovalIzin('${a.idKaryawan}', '${a.tanggal}', 'Disetujui')"><i class="bi bi-check-lg"></i></button>
+           <button class="btn btn-sm btn-danger rounded-circle" title="Tolak" onclick="eksekusiApprovalIzin('${a.idKaryawan}', '${a.tanggal}', 'Ditolak')"><i class="bi bi-x-lg"></i></button>
+         `;
+
+         if(st === 'Disetujui') {
+            badgeStatus = '<span class="badge bg-success px-3 py-1 rounded-pill">Disetujui</span>';
+            actionBtns = `<span class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Done</span>`;
+         } else if(st === 'Ditolak') {
+            badgeStatus = '<span class="badge bg-danger px-3 py-1 rounded-pill">Ditolak</span>';
+            actionBtns = `<span class="text-danger small fw-bold"><i class="bi bi-x-circle-fill"></i> Done</span>`;
+         }
+
+         let ketParts = a.keterangan.split(" - ");
+         let tipeIzin = ketParts[0];
+         let alasan = ketParts.length > 1 ? ketParts[1] : "-";
+
+         tbody.innerHTML += `
+            <tr>
+               <td class="text-start">
+                  <span class="fw-bold d-block text-dark">${namaUser}</span>
+                  <small class="text-muted">${formatTanggalIndo(a.tanggal)}</small>
+               </td>
+               <td>
+                  <span class="d-block fw-bold">${tipeIzin}</span>
+                  <small class="text-muted d-block text-truncate" style="max-width:150px;" title="${alasan}">${alasan}</small>
+               </td>
+               <td>${buktiBtn}</td>
+               <td>${badgeStatus}</td>
+               <td>${actionBtns}</td>
+            </tr>
+         `;
+      });
+    }
+
+    async function eksekusiApprovalIzin(idKar, tgl, statusBaru) {
+       if(!confirm(`Anda yakin ingin memberikan status "${statusBaru}" pada pengajuan ini?`)) return;
+       
+       document.getElementById('loadingText').innerText = "Memproses Persetujuan..."; 
+       document.getElementById('loadingSpinner').style.display = 'flex';
+       
+       try {
+          await callGAS('approvalIzinGAS', { idKaryawan: idKar, tanggal: tgl, statusApproval: statusBaru });
+          await sinkronisasiDataServer(); 
+          document.getElementById('loadingSpinner').style.display = 'none';
+          alertNotif(`Pengajuan berhasil ${statusBaru}.`, "success");
+       } catch(err) {
+          document.getElementById('loadingSpinner').style.display = 'none';
+          alertNotif("Gagal: " + err.message, "danger");
+       }
+    }
+
     // ==========================================
-    // LOGIKA PROFIL USER (FOTO & PASSWORD & MENU)
+    // LOGIKA PROFIL USER
     // ==========================================
     let modalEditFotoObj = null;
     let modalGantiPassObj = null;
