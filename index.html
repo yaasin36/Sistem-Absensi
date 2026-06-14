@@ -57,7 +57,7 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
     .navbar-custom .navbar-brand { color: #55A630 !important; font-weight: 800; font-size: 1.5rem; letter-spacing: 0.5px;}
-    .navbar-custom .nav-link { color: #738A73 !important; font-weight: 600; font-size: 0.95rem; margin: 0 5px; border-radius: 8px; transition: all 0.2s;}
+    .navbar-custom .nav-link { color: #738A73 !important; font-weight: 600; font-size: 0.95rem; margin: 0 5px; border-radius: 8px; transition: all 0.2s; cursor: pointer;}
     .navbar-custom .nav-link:hover, .navbar-custom .nav-link.active { background: #E8F5E9; color: #55A630 !important; }
     
     .modern-card { 
@@ -178,6 +178,7 @@
         font-size: 1.4rem; flex-shrink: 0;
     }
     
+    /* Navigasi Bawah Modern */
     .bottom-nav-container {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
     }
@@ -188,11 +189,18 @@
       display: flex; justify-content: space-between; align-items: center;
       padding: 12px 25px;
       padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      overflow-x: auto; 
+      gap: 10px;
+      scrollbar-width: none; 
     }
+    .bottom-nav-bg::-webkit-scrollbar { display: none; }
+    
     .bottom-nav-item {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #A0AEC0; font-size: 0.75rem; font-weight: 700;
-      width: 50px; cursor: pointer; transition: all 0.2s;
+      min-width: 55px; 
+      flex-shrink: 0;
+      cursor: pointer; transition: all 0.2s;
     }
     .bottom-nav-item.active { color: #55A630; }
     .bottom-nav-item i { font-size: 1.5rem; margin-bottom: 2px; }
@@ -282,7 +290,6 @@
 </head>
 <body>
 
-  <!-- Loading Overlay -->
   <div id="loadingSpinner" class="spinner-overlay">
     <div class="spinner-border" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.35rem; color: #55A630 !important;">
       <span class="visually-hidden">Loading...</span>
@@ -290,14 +297,12 @@
     <div class="mt-3 fw-bold fs-6" style="color: #1F2937;" id="loadingText">Memproses...</div>
   </div>
 
-  <!-- Global Notif Banner -->
   <div id="globalNotif" class="position-fixed top-0 start-50 translate-middle-x mt-3 w-100 px-3" style="max-width: 500px; z-index: 1050; display: none;">
     <div class="alert shadow-lg border-0 text-white d-flex align-items-center rounded-pill" id="globalNotifContent" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);">
        <i class="bi bi-info-circle-fill me-2 fs-5" id="globalNotifIcon"></i> <span id="globalNotifText" class="fw-bold small">Pesan Notifikasi</span>
     </div>
   </div>
 
-  <!-- Top Navigation (Desktop Only) -->
   <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-custom fixed-top d-none">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="javascript:void(0)">
@@ -309,9 +314,10 @@
           <li class="nav-item" id="navDesktopAbsen"><a class="nav-link" href="javascript:void(0)" data-page="pageAbsen" onclick="switchPage('pageAbsen')">Kamera</a></li>
           <li class="nav-item" id="navDesktopIzin"><a class="nav-link" href="javascript:void(0)" data-page="pageIzin" onclick="switchPage('pageIzin')">Izin</a></li>
           <li class="nav-item" id="navDesktopKalender"><a class="nav-link" href="javascript:void(0)" data-page="pageKalender" onclick="bukaKalender()">Riwayat</a></li>
-          <li class="nav-item d-none" id="navDesktopKalenderTim"><a class="nav-link" href="javascript:void(0)" data-page="pageKalenderTim" onclick="switchPage('pageKalenderTim'); renderKalenderTim();">Kalender Tim</a></li>
-          <li class="nav-item d-none" id="navAdminAbsensi"><a class="nav-link" href="javascript:void(0)" data-page="pageAdminAbsensi" onclick="bukaAdminAbsensi()">Data Tim</a></li>
-          <li class="nav-item d-none" id="navManajemen"><a class="nav-link" href="javascript:void(0)" data-page="pageManajemen" onclick="switchPage('pageManajemen')">Karyawan</a></li>
+          
+          <li class="nav-item d-none" id="navDesktopKalenderTim"><a class="nav-link" href="javascript:void(0)" data-page="pageAdminAbsensi" onclick="bukaAdminMenu('kalender')">Kalender Tim</a></li>
+          <li class="nav-item d-none" id="navAdminAbsensi"><a class="nav-link" href="javascript:void(0)" data-page="pageAdminAbsensi" onclick="bukaAdminMenu('absensi')">Data Tim</a></li>
+          <li class="nav-item d-none" id="navManajemen"><a class="nav-link" href="javascript:void(0)" data-page="pageAdminAbsensi" onclick="bukaAdminMenu('karyawan')">Karyawan</a></li>
         </ul>
         <button class="btn btn-outline-primary rounded-pill px-4 fw-bold me-2" onclick="switchPage('pageProfil')"><i class="bi bi-person-circle"></i> Profil</button>
         <button class="btn btn-outline-danger rounded-pill px-4 fw-bold" onclick="logout()">Keluar</button>
@@ -319,22 +325,38 @@
     </div>
   </nav>
 
-  <!-- Bottom Navigation (Mobile Only) -->
   <div class="bottom-nav-container d-none" id="bottomNav">
-    <div class="fab-center" id="nav-btn-pageAbsen" onclick="switchPage('pageAbsen')" title="Absen Kamera">
+    <div class="fab-center" id="fab-camera" onclick="switchPage('pageAbsen')" title="Absen Kamera">
       <i class="bi bi-camera-video-fill"></i>
     </div>
-    <div class="bottom-nav-bg">
+    
+    <div class="bottom-nav-bg" id="bottomNavBg">
       <div class="bottom-nav-item active" id="nav-btn-pageDashboard" onclick="switchPage('pageDashboard')">
         <i class="bi bi-house-door-fill"></i><span>Home</span>
       </div>
-      <div class="bottom-nav-item" id="nav-btn-pageIzin" onclick="switchPage('pageIzin')" style="margin-right: 35px;">
+      
+      <div class="bottom-nav-item" id="nav-btn-pageIzin" onclick="switchPage('pageIzin')">
         <i class="bi bi-envelope-paper-fill"></i><span>Izin</span>
       </div>
       
-      <div class="bottom-nav-item" id="nav-btn-pageKalender" onclick="bukaKalender()" style="margin-left: 35px;">
+      <div class="bottom-nav-item d-none" id="nav-btn-pageKalenderTim" onclick="bukaAdminMenu('kalender')">
+        <i class="bi bi-calendar-range"></i><span>Kalender</span>
+      </div>
+      
+      <div id="nav-spacer-left" style="width: 25px;"></div>
+      
+      <div class="bottom-nav-item" id="nav-btn-pageKalender" onclick="bukaKalender()">
         <i class="bi bi-calendar-event-fill"></i><span>Riwayat</span>
       </div>
+      
+      <div class="bottom-nav-item d-none" id="nav-btn-pageAdminAbsensi" onclick="bukaAdminMenu('absensi')">
+        <i class="bi bi-clipboard-data"></i><span>Data Tim</span>
+      </div>
+      
+      <div class="bottom-nav-item d-none" id="nav-btn-pageManajemen" onclick="bukaAdminMenu('karyawan')">
+        <i class="bi bi-people"></i><span>Karyawan</span>
+      </div>
+
       <div class="bottom-nav-item" id="nav-btn-pageProfil" onclick="switchPage('pageProfil')">
         <i class="bi bi-person-fill"></i><span>Profil</span>
       </div>
@@ -343,7 +365,6 @@
 
   <div class="container" id="mainContainer">
     
-    <!-- PAGE: LOGIN -->
     <div id="pageLogin" class="page active">
       <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="col-md-6 col-lg-5 col-xl-4">
@@ -375,7 +396,6 @@
       </div>
     </div>
 
-    <!-- PAGE: DASHBOARD -->
     <div id="pageDashboard" class="page">
       <div class="container-mobile">
         <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
@@ -439,7 +459,6 @@
       </div>
     </div>
 
-    <!-- PAGE: NOTIFIKASI -->
     <div id="pageNotifikasi" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -459,7 +478,6 @@
       </div>
     </div>
 
-    <!-- PAGE: FORM IZIN -->
     <div id="pageIzin" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -490,7 +508,7 @@
                 <select id="inputJenisIzin" class="form-select" required onchange="toggleSuratDokter()">
                   <option value="" selected disabled>-- Pilih Jenis Izin --</option>
                   <option value="Sakit">Sakit</option>
-                  <option value="Cuti">Cuti Tahunan</option>
+                  <option value="Cuti Tahunan">Cuti Tahunan</option>
                   <option value="Keperluan Pribadi">Keperluan Pribadi</option>
                 </select>
               </div>
@@ -525,7 +543,6 @@
       </div>
     </div>
 
-    <!-- PAGE: ABSEN KAMERA -->
     <div id="pageAbsen" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6 text-center">
@@ -584,7 +601,6 @@
       </div>
     </div>
 
-    <!-- PAGE: RIWAYAT (KALENDER PERSONAL) -->
     <div id="pageKalender" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -624,54 +640,18 @@
       </div>
     </div>
 
-    <!-- PAGE: KALENDER TIM (STANDALONE) -->
-    <div id="pageKalenderTim" class="page">
-      <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-          <div class="modern-card p-4 mt-2">
-            <div class="d-flex align-items-center mb-4">
-              <div class="act-avatar m-0 me-3 shadow-sm bg-white border text-primary">
-                <i class="bi bi-calendar-range"></i>
-              </div>
-              <div>
-                <h5 class="mb-0 fw-bolder">Kalender Tim</h5>
-                <p class="text-muted small mb-0">Pantau kehadiran seluruh karyawan.</p>
-              </div>
-            </div>
-            
-            <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-pill border mb-4 shadow-sm" style="max-width: 300px; margin: 0 auto;">
-              <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(-1, 'filterBulanTim', renderKalenderTim)"><i class="bi bi-chevron-left"></i></button>
-              <input type="month" id="filterBulanTim" class="form-control text-center fw-bold shadow-none border-0 bg-transparent text-dark w-auto" style="font-size:1rem;" onchange="renderKalenderTim()">
-              <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(1, 'filterBulanTim', renderKalenderTim)"><i class="bi bi-chevron-right"></i></button>
-            </div>
-            
-            <p class="text-center text-muted small mb-3">Klik pada tanggal untuk melihat rincian kehadiran tim.</p>
-
-            <div class="calendar-grid">
-              <div class="calendar-day-header">Min</div><div class="calendar-day-header">Sen</div>
-              <div class="calendar-day-header">Sel</div><div class="calendar-day-header">Rab</div>
-              <div class="calendar-day-header">Kam</div><div class="calendar-day-header">Jum</div>
-              <div class="calendar-day-header">Sab</div>
-            </div>
-            <div class="calendar-grid" id="calendarBodyTim"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE: ADMIN - DATA ABSENSI & APPROVAL TIM -->
     <div id="pageAdminAbsensi" class="page">
       <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
-          <div class="modern-card p-4 mt-2">
+          <div class="modern-card p-4 mt-2 mb-5">
             
             <div class="d-flex align-items-center mb-4">
               <div class="act-avatar m-0 me-3 shadow-sm bg-white border text-primary">
-                <i class="bi bi-clipboard-data"></i>
+                <i class="bi bi-shield-lock"></i>
               </div>
               <div>
-                <h5 class="mb-0 fw-bolder">Manajemen Data Tim</h5>
-                <p class="text-muted small mb-0">Pantau absensi dan persetujuan izin karyawan.</p>
+                <h5 class="mb-0 fw-bolder">Ruang Administrator</h5>
+                <p class="text-muted small mb-0">Kelola data terpusat, absensi, dan profil tim.</p>
               </div>
             </div>
 
@@ -679,10 +659,19 @@
             <div class="scroll-x mb-4 border-bottom pb-2">
               <ul class="nav nav-pills flex-nowrap gap-2" id="adminTabs" role="tablist" style="white-space: nowrap;">
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link active rounded-pill fw-bold px-4" id="tab-absensi" data-bs-toggle="pill" data-bs-target="#content-absensi" type="button" role="tab">Data Absensi</button>
+                  <button class="nav-link active rounded-pill fw-bold px-4" id="tab-absensi" data-bs-toggle="pill" data-bs-target="#content-absensi" type="button" role="tab" onclick="bukaAdminMenu('absensi', true)">Data Absensi</button>
                 </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link rounded-pill fw-bold px-4" id="tab-approval" data-bs-toggle="pill" data-bs-target="#content-approval" type="button" role="tab">Persetujuan Izin</button>
+                <!-- Tab Approval (SuperAdmin only) -->
+                <li class="nav-item" role="presentation" id="nav-item-approval">
+                  <button class="nav-link rounded-pill fw-bold px-4" id="tab-approval" data-bs-toggle="pill" data-bs-target="#content-approval" type="button" role="tab" onclick="bukaAdminMenu('approval', true)">Persetujuan Izin</button>
+                </li>
+                <!-- Shortcut untuk Kalender Tim -->
+                <li class="nav-item" role="presentation" id="nav-item-kalender">
+                  <button class="nav-link rounded-pill fw-bold px-4" id="tab-kalender" data-bs-toggle="pill" data-bs-target="#content-kalender" type="button" role="tab" onclick="bukaAdminMenu('kalender', true)">Kalender Tim</button>
+                </li>
+                <!-- Shortcut untuk Data Karyawan -->
+                <li class="nav-item" role="presentation" id="nav-item-karyawan">
+                  <button class="nav-link rounded-pill fw-bold px-4" id="tab-karyawan" data-bs-toggle="pill" data-bs-target="#content-karyawan" type="button" role="tab" onclick="bukaAdminMenu('karyawan', true)">Data Karyawan</button>
                 </li>
               </ul>
             </div>
@@ -764,54 +753,57 @@
                 </div>
               </div>
 
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <!-- Tab Content: Kalender Tim -->
+              <div class="tab-pane fade" id="content-kalender" role="tabpanel">
+                <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-pill border mb-4 shadow-sm" style="max-width: 300px; margin: 0 auto;">
+                  <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(-1, 'filterBulanTim', renderKalenderTim)"><i class="bi bi-chevron-left"></i></button>
+                  <input type="month" id="filterBulanTim" class="form-control text-center fw-bold shadow-none border-0 bg-transparent text-dark w-auto" style="font-size:1rem;" onchange="renderKalenderTim()">
+                  <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(1, 'filterBulanTim', renderKalenderTim)"><i class="bi bi-chevron-right"></i></button>
+                </div>
+                
+                <p class="text-center text-muted small mb-3">Klik pada tanggal untuk melihat rincian kehadiran tim.</p>
 
-    <!-- PAGE: MANAJEMEN KARYAWAN -->
-    <div id="pageManajemen" class="page">
-      <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-          <div class="modern-card p-4 mt-2">
-            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
-              <div class="d-flex align-items-center">
-                <div class="act-avatar m-0 me-3 shadow-sm bg-white border text-primary">
-                  <i class="bi bi-people"></i>
+                <div class="calendar-grid">
+                  <div class="calendar-day-header">Min</div><div class="calendar-day-header">Sen</div>
+                  <div class="calendar-day-header">Sel</div><div class="calendar-day-header">Rab</div>
+                  <div class="calendar-day-header">Kam</div><div class="calendar-day-header">Jum</div>
+                  <div class="calendar-day-header">Sab</div>
                 </div>
-                <div>
-                  <h5 class="mb-0 fw-bolder">Kelola Karyawan</h5>
-                  <p class="text-muted small mb-0">Tambah, edit, nonaktifkan, atau atur tgl masuk.</p>
-                </div>
+                <div class="calendar-grid" id="calendarBodyTim"></div>
               </div>
-              <button class="btn-primary-modern rounded-pill shadow-sm px-3 py-2" onclick="bukaModalTambah()">
-                <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Tambah</span>
-              </button>
-            </div>
-            
-            <div class="table-responsive rounded-4 border">
-              <table class="table table-hover align-middle text-center mb-0 text-nowrap">
-                <thead class="table-light">
-                  <tr>
-                    <th class="py-3">ID</th>
-                    <th class="py-3 text-start">Profil Karyawan</th>
-                    <th class="py-3">Jabatan & Periode</th>
-                    <th class="py-3">Status / Role</th>
-                    <th class="py-3">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="tabelKaryawanBody">
-                  <tr><td colspan="5" class="py-5 text-muted">Memuat data...</td></tr>
-                </tbody>
-              </table>
+
+              <!-- Tab Content: Manajemen Karyawan -->
+              <div class="tab-pane fade" id="content-karyawan" role="tabpanel">
+                 <div class="d-flex justify-content-between align-items-center mb-3">
+                   <p class="text-muted small mb-0 d-none d-sm-block">Tambah, edit, atau nonaktifkan akun karyawan.</p>
+                   <button class="btn-primary-modern rounded-pill shadow-sm px-3 py-2 ms-auto" onclick="bukaModalTambah()">
+                     <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline ms-1">Tambah</span>
+                   </button>
+                 </div>
+                 <div class="table-responsive rounded-4 border">
+                   <table class="table table-hover align-middle text-center mb-0 text-nowrap">
+                     <thead class="table-light">
+                       <tr>
+                         <th class="py-3">ID</th>
+                         <th class="py-3 text-start">Profil Karyawan</th>
+                         <th class="py-3">Jabatan & Periode</th>
+                         <th class="py-3">Status / Role</th>
+                         <th class="py-3">Aksi</th>
+                       </tr>
+                     </thead>
+                     <tbody id="tabelKaryawanBody">
+                       <tr><td colspan="5" class="py-5 text-muted">Memuat data...</td></tr>
+                     </tbody>
+                   </table>
+                 </div>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- PAGE: PROFIL -->
     <div id="pageProfil" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -835,6 +827,14 @@
             <h5 class="fw-bold text-dark mb-3 px-1">Umum</h5>
             <div class="d-flex flex-column gap-3 pb-4">
                
+               <div class="profile-menu-item" onclick="bukaKalender()">
+                  <div class="d-flex align-items-center">
+                     <i class="bi bi-calendar2-check fs-3 text-primary me-3"></i>
+                     <span class="fw-bold text-dark" style="font-size: 1.05rem;">Riwayat Absensi</span>
+                  </div>
+                  <i class="bi bi-chevron-right text-primary fs-5"></i>
+               </div>
+
                <div class="profile-menu-item" onclick="lihatWaktuKerja()">
                   <div class="d-flex align-items-center">
                      <i class="bi bi-calendar-check fs-3 text-primary me-3"></i>
@@ -875,36 +875,6 @@
                   <i class="bi bi-chevron-right text-primary fs-5"></i>
                </div>
 
-            </div>
-            
-            <!-- Menu Khusus Admin/SuperAdmin (Terutama berguna untuk Akses HP) -->
-            <div id="menuAdminKhusus" class="d-none">
-               <h5 class="fw-bold text-dark mb-3 px-1 mt-4">Menu Administrator</h5>
-               <div class="d-flex flex-column gap-3 pb-4">
-                   <div class="profile-menu-item" onclick="switchPage('pageKalenderTim'); renderKalenderTim();">
-                      <div class="d-flex align-items-center">
-                         <i class="bi bi-calendar-range fs-3 text-primary me-3"></i>
-                         <span class="fw-bold text-dark" style="font-size: 1.05rem;">Kalender Tim</span>
-                      </div>
-                      <i class="bi bi-chevron-right text-primary fs-5"></i>
-                   </div>
-                   
-                   <div class="profile-menu-item" onclick="bukaAdminAbsensi()">
-                      <div class="d-flex align-items-center">
-                         <i class="bi bi-clipboard-data fs-3 text-primary me-3"></i>
-                         <span class="fw-bold text-dark" style="font-size: 1.05rem;">Data Tim & Izin</span>
-                      </div>
-                      <i class="bi bi-chevron-right text-primary fs-5"></i>
-                   </div>
-                   
-                   <div class="profile-menu-item" onclick="switchPage('pageManajemen'); renderTabelKaryawan();">
-                      <div class="d-flex align-items-center">
-                         <i class="bi bi-people fs-3 text-primary me-3"></i>
-                         <span class="fw-bold text-dark" style="font-size: 1.05rem;">Kelola Karyawan</span>
-                      </div>
-                      <i class="bi bi-chevron-right text-primary fs-5"></i>
-                   </div>
-               </div>
             </div>
 
           </div>
@@ -1142,7 +1112,7 @@
     </div>
   </div>
 
-  <!-- Modal Konfirmasi -->
+  <!-- Modal Konfirmasi Approval -->
   <div class="modal fade" id="modalKonfirmasiApproval" tabindex="-1" style="z-index: 1070;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content light-modal text-center rounded-4 shadow-lg border-0">
@@ -1158,8 +1128,25 @@
       </div>
     </div>
   </div>
+  
+  <!-- Modal Konfirmasi Reset Password -->
+  <div class="modal fade" id="modalKonfirmasiReset" tabindex="-1" style="z-index: 1070;">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content light-modal text-center rounded-4 shadow-lg border-0">
+        <div class="modal-body py-4 px-4">
+          <i class="bi bi-key-fill text-warning mb-3" style="font-size: 4rem;"></i>
+          <h5 class="fw-bolder text-dark mb-2">Reset Password?</h5>
+          <p class="text-muted small mb-4" id="konfirmResetMsg">Anda yakin ingin mereset password akun ini ke "karyawan123"?</p>
+          <div class="d-flex justify-content-center gap-2">
+            <button type="button" class="btn btn-light border fw-bold rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-4 shadow-sm" onclick="eksekusiResetPassword()">Ya, Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <!-- Modal Karyawan -->
+  <!-- Modal Karyawan CRUD -->
   <div class="modal fade" id="modalKaryawan" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content light-modal rounded-4">
@@ -1343,14 +1330,15 @@
                 populateAktivitasDashboard(activeType);
                 if (currentUser.role !== 'SuperAdmin') renderWeekCalendar();
             }
+            // Auto refresh table based on Admin active tab
             if(document.getElementById('pageAdminAbsensi').classList.contains('active')) { 
-                renderAdminAbsensi(); 
-                if (currentUser.role === 'SuperAdmin') renderPersetujuanIzin(); 
+                if(document.getElementById('content-absensi').classList.contains('show')) renderAdminAbsensi();
+                if(document.getElementById('content-approval').classList.contains('show')) renderPersetujuanIzin();
+                if(document.getElementById('content-kalender').classList.contains('show')) renderKalenderTim();
+                if(document.getElementById('content-karyawan').classList.contains('show')) renderTabelKaryawan();
             }
-            if(document.getElementById('pageManajemen').classList.contains('active')) renderTabelKaryawan();
             if(document.getElementById('pageNotifikasi').classList.contains('active') && currentUser.role !== 'SuperAdmin') renderNotifikasi();
             if(document.getElementById('pageKalender').classList.contains('active') && currentUser.role !== 'SuperAdmin') renderCalendar();
-            if(document.getElementById('pageKalenderTim').classList.contains('active')) renderKalenderTim();
             if(document.getElementById('pageIzin').classList.contains('active') && currentUser.role !== 'SuperAdmin') renderRiwayatIzinUser();
         } catch(err) {
             console.warn("Sinkronisasi ditunda: " + err.message);
@@ -1466,15 +1454,56 @@
               });
           }
 
-          if(pageId === 'pageManajemen') renderTabelKaryawan(); 
-          if(pageId === 'pageAdminAbsensi') { 
-              renderAdminAbsensi(); 
-              if (currentUser.role === 'SuperAdmin') renderPersetujuanIzin(); 
-          }
-
       } catch(errorNavigasi) {
           console.error("Navigation error:", errorNavigasi);
       }
+    }
+
+    function bukaAdminMenu(tabName, fromTabClick = false) {
+        // Jika tidak dari klik tab langsung, switch page dan buka tab nya
+        if (!fromTabClick) {
+            switchPage('pageAdminAbsensi');
+            const tabEl = document.querySelector(`#tab-${tabName}`);
+            if(tabEl) {
+                const tab = new bootstrap.Tab(tabEl);
+                tab.show();
+            }
+        }
+
+        // Sinkronisasi Active State pada Navbar
+        setTimeout(() => {
+            document.querySelectorAll('.navbar-custom .nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav-item').forEach(link => link.classList.remove('active'));
+            
+            let topNavId = '';
+            let bottomNavId = '';
+            
+            if (tabName === 'kalender') {
+                topNavId = 'pageKalenderTim';
+                bottomNavId = 'nav-btn-pageKalenderTim';
+                renderKalenderTim();
+            } else if (tabName === 'absensi' || tabName === 'approval') {
+                topNavId = 'pageAdminAbsensi';
+                bottomNavId = 'nav-btn-pageAdminAbsensi';
+                if (tabName === 'absensi') renderAdminAbsensi();
+                if (tabName === 'approval') renderPersetujuanIzin();
+            } else if (tabName === 'karyawan') {
+                topNavId = 'pageManajemen';
+                bottomNavId = 'nav-btn-pageManajemen';
+                renderTabelKaryawan();
+            }
+
+            const topLink = document.querySelector(`.navbar-custom .nav-link[data-page="${topNavId}"]`);
+            if (topLink) topLink.classList.add('active');
+            
+            const botLink = document.getElementById(bottomNavId);
+            if (botLink && currentUser.role === 'SuperAdmin') {
+                botLink.classList.add('active');
+            } else if (currentUser.role === 'Admin') {
+                const dtBotLink = document.getElementById('nav-btn-pageAdminAbsensi');
+                if(dtBotLink) dtBotLink.classList.add('active');
+            }
+        }, 10);
     }
 
     async function prosesLoginServer() {
@@ -1515,60 +1544,89 @@
       renderAvatarDashboard();
 
       const isPrivileged = data.role === 'SuperAdmin' || data.role === 'Admin';
-      document.getElementById('navManajemen').classList.toggle('d-none', !isPrivileged);
-      document.getElementById('navAdminAbsensi').classList.toggle('d-none', !isPrivileged);
+      
+      // Mengambil elemen navigasi bawah
+      const fabCamera = document.getElementById('fab-camera'); 
+      const navSpacer = document.getElementById('nav-spacer-left');
+      
+      const btnHome = document.getElementById('nav-btn-pageDashboard');
+      const btnIzin = document.getElementById('nav-btn-pageIzin');
+      const btnKalTim = document.getElementById('nav-btn-pageKalenderTim');
+      const btnRiwayat = document.getElementById('nav-btn-pageKalender');
+      const btnDataTim = document.getElementById('nav-btn-pageAdminAbsensi');
+      const btnKaryawan = document.getElementById('nav-btn-pageManajemen');
+      const btnProfil = document.getElementById('nav-btn-pageProfil');
 
+      // Mengambil elemen navigasi atas (Desktop)
       const navLinkIzinDesktop = document.getElementById('navDesktopIzin');
-      const navLinkIzinMobile = document.getElementById('nav-btn-pageIzin');
-      
       const navLinkAbsenDesktop = document.getElementById('navDesktopAbsen');
-      const navLinkAbsenMobile = document.getElementById('nav-btn-pageAbsen');
-      
       const navLinkRiwayatDesktop = document.getElementById('navDesktopKalender');
-      const navLinkRiwayatMobile = document.getElementById('nav-btn-pageKalender');
-      
       const navLinkKalenderTimDesktop = document.getElementById('navDesktopKalenderTim');
-      
-      // Mengatur Tampilan Khusus Berdasarkan Role
+      const navLinkAdminAbsensiDesktop = document.getElementById('navAdminAbsensi');
+      const navLinkManajemenDesktop = document.getElementById('navManajemen');
+
       if (data.role === 'SuperAdmin') {
-          // SuperAdmin tidak bisa absen & izin pribadi
+          // Bottom Nav Super Admin (5 item: Home, Kalender, Data Tim, Karyawan, Profil)
+          if(fabCamera) fabCamera.classList.add('d-none');
+          if(navSpacer) navSpacer.classList.add('d-none');
+          
+          if(btnIzin) btnIzin.classList.add('d-none');
+          if(btnRiwayat) btnRiwayat.classList.add('d-none');
+          
+          if(btnKalTim) btnKalTim.classList.remove('d-none');
+          if(btnDataTim) btnDataTim.classList.remove('d-none');
+          if(btnKaryawan) btnKaryawan.classList.remove('d-none');
+
+          // Desktop Nav
           if(navLinkAbsenDesktop) navLinkAbsenDesktop.classList.add('d-none');
-          if(navLinkAbsenMobile) navLinkAbsenMobile.classList.add('d-none');
-          
           if(navLinkIzinDesktop) navLinkIzinDesktop.classList.add('d-none');
-          if(navLinkIzinMobile) navLinkIzinMobile.classList.add('d-none');
-          
           if(navLinkRiwayatDesktop) navLinkRiwayatDesktop.classList.add('d-none');
           
           if(navLinkKalenderTimDesktop) navLinkKalenderTimDesktop.classList.remove('d-none');
+          if(navLinkAdminAbsensiDesktop) navLinkAdminAbsensiDesktop.classList.remove('d-none');
+          if(navLinkManajemenDesktop) navLinkManajemenDesktop.classList.remove('d-none');
+
+      } else if (data.role === 'Admin') {
+          // Bottom Nav Admin (User + Data Tim: Home, Izin, Kamera, Data Tim, Profil)
+          if(fabCamera) fabCamera.classList.remove('d-none');
+          if(navSpacer) navSpacer.classList.remove('d-none');
           
-          // Ganti tombol Riwayat di Mobile jadi Kalender Tim
-          if(navLinkRiwayatMobile) {
-              navLinkRiwayatMobile.querySelector('span').innerText = "Kalender";
-              navLinkRiwayatMobile.onclick = () => { switchPage('pageKalenderTim'); renderKalenderTim(); };
-          }
+          if(btnIzin) btnIzin.classList.remove('d-none'); 
+          if(btnDataTim) btnDataTim.classList.remove('d-none'); 
           
-      } else {
-          // User dan Admin bisa absen & izin pribadi
+          if(btnKalTim) btnKalTim.classList.add('d-none');
+          if(btnRiwayat) btnRiwayat.classList.add('d-none');
+          if(btnKaryawan) btnKaryawan.classList.add('d-none');
+
+          // Desktop Nav
           if(navLinkAbsenDesktop) navLinkAbsenDesktop.classList.remove('d-none');
-          if(navLinkAbsenMobile) navLinkAbsenMobile.classList.remove('d-none');
-          
           if(navLinkIzinDesktop) navLinkIzinDesktop.classList.remove('d-none');
-          if(navLinkIzinMobile) navLinkIzinMobile.classList.remove('d-none');
-          
           if(navLinkRiwayatDesktop) navLinkRiwayatDesktop.classList.remove('d-none');
           
-          // Khusus Admin, tampilkan Kalender Tim di Desktop 
-          if(navLinkKalenderTimDesktop) {
-             if(data.role === 'Admin') navLinkKalenderTimDesktop.classList.remove('d-none');
-             else navLinkKalenderTimDesktop.classList.add('d-none');
-          }
+          if(navLinkKalenderTimDesktop) navLinkKalenderTimDesktop.classList.remove('d-none');
+          if(navLinkAdminAbsensiDesktop) navLinkAdminAbsensiDesktop.classList.remove('d-none');
+          if(navLinkManajemenDesktop) navLinkManajemenDesktop.classList.remove('d-none');
+
+      } else {
+          // Bottom Nav User (Home, Izin, Kamera, Riwayat, Profil)
+          if(fabCamera) fabCamera.classList.remove('d-none');
+          if(navSpacer) navSpacer.classList.remove('d-none');
           
-          // Kembalikan tombol Riwayat di Mobile ke semula
-          if(navLinkRiwayatMobile) {
-              navLinkRiwayatMobile.querySelector('span').innerText = "Riwayat";
-              navLinkRiwayatMobile.onclick = () => { switchPage('pageKalender'); renderCalendar(); };
-          }
+          if(btnIzin) btnIzin.classList.remove('d-none'); 
+          if(btnRiwayat) btnRiwayat.classList.remove('d-none'); 
+          
+          if(btnKalTim) btnKalTim.classList.add('d-none');
+          if(btnDataTim) btnDataTim.classList.add('d-none');
+          if(btnKaryawan) btnKaryawan.classList.add('d-none');
+
+          // Desktop Nav
+          if(navLinkAbsenDesktop) navLinkAbsenDesktop.classList.remove('d-none');
+          if(navLinkIzinDesktop) navLinkIzinDesktop.classList.remove('d-none');
+          if(navLinkRiwayatDesktop) navLinkRiwayatDesktop.classList.remove('d-none');
+          
+          if(navLinkKalenderTimDesktop) navLinkKalenderTimDesktop.classList.add('d-none');
+          if(navLinkAdminAbsensiDesktop) navLinkAdminAbsensiDesktop.classList.add('d-none');
+          if(navLinkManajemenDesktop) navLinkManajemenDesktop.classList.add('d-none');
       }
 
       // Sembunyikan Tab Approval Izin di menu "Data Tim" untuk Admin (Hanya SuperAdmin yang bisa acc)
@@ -1668,30 +1726,35 @@
         const container = document.getElementById('containerAktivitasTerbaru');
         container.innerHTML = '';
         
-        let myAbsen = [];
+        let myAbsen = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id).reverse();
         
         if (filterType === 'Absen') {
-            myAbsen = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && (a.tipe === 'Masuk' || a.tipe === 'Pulang')).reverse();
+            myAbsen = myAbsen.filter(a => a.tipe === 'Masuk' || a.tipe === 'Pulang');
         } else if (filterType === 'Izin') {
-            myAbsen = DB_IZIN.filter(a => a.idKaryawan === currentUser.id).reverse();
-        } else {
-            const combined = [
-                ...DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && (a.tipe === 'Masuk' || a.tipe === 'Pulang')),
-                ...DB_IZIN.filter(a => a.idKaryawan === currentUser.id)
-            ];
-            combined.sort((a,b) => (a.timestamp < b.timestamp) ? 1 : -1);
-            myAbsen = combined;
+            myAbsen = myAbsen.filter(a => a.tipe === 'Izin');
         }
 
-        myAbsen = myAbsen.slice(0, 10);
+        let uniqueAbsen = [];
+        let seenSet = new Set();
+        myAbsen.forEach(a => {
+            let key = `${a.tanggal}_${a.tipe}`;
+            if(a.tipe === 'Izin') key = a.keterangan.split(" (ID: ")[1]; 
+            
+            if(!seenSet.has(key)) {
+                seenSet.add(key);
+                uniqueAbsen.push(a);
+            }
+        });
+
+        uniqueAbsen = uniqueAbsen.slice(0, 10);
         
-        if(myAbsen.length === 0) {
+        if(uniqueAbsen.length === 0) {
             container.innerHTML = `<div class="text-muted small text-center py-3">Belum ada aktivitas terekam.</div>`;
             return;
         }
 
-        myAbsen.forEach(a => {
-            const isIzin = !!a.idIzin; 
+        uniqueAbsen.forEach(a => {
+            const isIzin = a.tipe === 'Izin';
             const iconBg = isIzin ? 'bg-primary bg-opacity-10 text-primary' : (a.tipe === 'Masuk' ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger');
             const iconStr = isIzin ? '<i class="bi bi-envelope-paper-fill"></i>' : (a.tipe === 'Masuk' ? '<i class="bi bi-box-arrow-in-right"></i>' : '<i class="bi bi-box-arrow-left"></i>');
             
@@ -1699,8 +1762,18 @@
             let timeStr = `${a.waktu} WIB • ${formatTanggalIndo(a.tanggal)}`;
 
             if(isIzin) {
-               titleStr = `Izin ${a.tipeIzin} (${a.statusIzin})`;
-               timeStr = a.rentangTanggal;
+               let stIzin = "Izin"; let appStatus = "Disetujui"; let rTgl = formatTanggalIndo(a.tanggal);
+               let idIzinExt = a.keterangan.match(/\(ID: (.*?)\)/);
+               if(idIzinExt) {
+                   const dataIzinFull = DB_IZIN.find(iz => iz.idIzin === idIzinExt[1]);
+                   if(dataIzinFull) {
+                       stIzin = dataIzinFull.tipeIzin;
+                       appStatus = dataIzinFull.statusIzin;
+                       rTgl = dataIzinFull.rentangTanggal;
+                   }
+               }
+               titleStr = `Izin ${stIzin} (${appStatus})`;
+               timeStr = rTgl;
             }
 
             container.innerHTML += `
@@ -1737,39 +1810,39 @@
             
             if (dateStr < tglMasukUser || dateStr > tglKeluarUser) continue;
 
-            const absRecords = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && a.tanggal === dateStr && a.tipe !== 'Izin');
-            const dIzin = DB_IZIN.find(iz => iz.idKaryawan === currentUser.id && iz.tanggalArray.includes(dateStr));
+            const records = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && a.tanggal === dateStr);
+            const dIzinCheck = DB_IZIN.find(iz => iz.idKaryawan === currentUser.id && iz.tanggalArray.includes(dateStr));
             
             let dayTitle = i === 0 ? "Hari Ini" : (i === 1 ? "Kemarin" : formatTanggalIndo(dateStr));
             let dayNotifsHTML = '';
 
             if (i === 0) { 
-                const masuk = absRecords.find(a => a.tipe === 'Masuk');
-                const pulang = absRecords.find(a => a.tipe === 'Pulang');
+                const masuk = records.find(a => a.tipe === 'Masuk');
+                const pulang = records.find(a => a.tipe === 'Pulang');
 
-                if (!masuk && !dIzin) dayNotifsHTML += buatKartuNotif('bi-exclamation-triangle-fill', 'text-warning', 'bg-warning', 'Belum Absen Masuk', 'Anda belum melakukan absen masuk hari ini. Jangan lupa presensi!', 'Peringatan');
+                if (!masuk && !dIzinCheck) dayNotifsHTML += buatKartuNotif('bi-exclamation-triangle-fill', 'text-warning', 'bg-warning', 'Belum Absen Masuk', 'Anda belum melakukan absen masuk hari ini. Jangan lupa presensi!', 'Peringatan');
                 if (masuk) dayNotifsHTML += buatKartuNotif('bi-box-arrow-in-right', 'text-success', 'bg-success', 'Absen Masuk Berhasil', `Sistem telah mencatat kehadiran masuk Anda.`, masuk.waktu + ' WIB');
                 if (pulang) dayNotifsHTML += buatKartuNotif('bi-box-arrow-left', 'text-danger', 'bg-danger', 'Absen Pulang Berhasil', `Kerja bagus hari ini! Waktu pulang telah tercatat.`, pulang.waktu + ' WIB');
                 
-                if (dIzin) {
-                   let stColor = dIzin.statusIzin === 'Disetujui' ? 'bg-success' : (dIzin.statusIzin === 'Ditolak' ? 'bg-danger' : 'bg-primary');
-                   let stIcon = dIzin.statusIzin === 'Disetujui' ? 'bi-check-circle-fill' : (dIzin.statusIzin === 'Ditolak' ? 'bi-x-circle-fill' : 'bi-hourglass-split');
+                if (dIzinCheck) {
+                   let stColor = dIzinCheck.statusIzin === 'Disetujui' ? 'bg-success' : (dIzinCheck.statusIzin === 'Ditolak' ? 'bg-danger' : 'bg-primary');
+                   let stIcon = dIzinCheck.statusIzin === 'Disetujui' ? 'bi-check-circle-fill' : (dIzinCheck.statusIzin === 'Ditolak' ? 'bi-x-circle-fill' : 'bi-hourglass-split');
                    let txColor = stColor.replace('bg-', 'text-');
-                   dayNotifsHTML += buatKartuNotif(stIcon, txColor, stColor, `Pengajuan Izin: ${dIzin.tipeIzin}`, `Status: ${dIzin.statusIzin}. Ket: ${dIzin.keterangan}`, 'Info Izin');
+                   dayNotifsHTML += buatKartuNotif(stIcon, txColor, stColor, `Pengajuan Izin: ${dIzinCheck.tipeIzin}`, `Status: ${dIzinCheck.statusIzin}. Ket: ${dIzinCheck.keterangan}`, 'Info Izin');
                 }
             } else { 
-                const masuk = absRecords.find(a => a.tipe === 'Masuk');
+                const masuk = records.find(a => a.tipe === 'Masuk');
 
-                if (absRecords.length === 0 && (!dIzin || dIzin.statusIzin === 'Ditolak')) {
+                if (records.length === 0 && (!dIzinCheck || dIzinCheck.statusIzin === 'Ditolak')) {
                      const isWeekend = d.getDay() === 0 || d.getDay() === 6;
                      if(!isWeekend) dayNotifsHTML += buatKartuNotif('bi-x-circle-fill', 'text-danger', 'bg-danger', 'Tidak Ada Kehadiran (Alpa)', 'Anda terdeteksi tidak mencatat kehadiran pada hari ini.', 'Sistem');
                      else dayNotifsHTML += buatKartuNotif('bi-calendar-x', 'text-secondary', 'bg-secondary', 'Akhir Pekan / Libur', 'Waktu istirahat Anda.', 'Sistem');
                 } else {
                     if (masuk) dayNotifsHTML += buatKartuNotif('bi-check-circle-fill', 'text-success', 'bg-success', 'Kehadiran Tercatat', `Anda telah absen masuk pada ${masuk.waktu} WIB.`, 'Selesai');
-                    if (dIzin) {
-                       let color = dIzin.statusIzin === 'Disetujui' ? 'bg-success' : (dIzin.statusIzin === 'Ditolak' ? 'bg-danger' : 'bg-primary');
+                    if (dIzinCheck) {
+                       let color = dIzinCheck.statusIzin === 'Disetujui' ? 'bg-success' : (dIzinCheck.statusIzin === 'Ditolak' ? 'bg-danger' : 'bg-primary');
                        let textCol = color.replace('bg-', 'text-');
-                       dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', textCol, color, `Izin/Cuti`, `Status pengajuan: ${dIzin.statusIzin}.`, 'Selesai');
+                       dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', textCol, color, `Izin/Cuti`, `Status pengajuan: ${dIzinCheck.statusIzin}.`, 'Selesai');
                     }
                 }
             }
@@ -1967,11 +2040,10 @@
           if(a.tipe === 'Pulang') absMap[a.tanggal].pulang = true;
           if(a.tipe === 'Izin') { 
             absMap[a.tanggal].izin = true; 
-            absMap[a.tanggal].statusIzin = "Disetujui"; // Kalau ada di sheet absensi berarti udah disetujui
+            absMap[a.tanggal].statusIzin = "Disetujui"; 
           }
       });
 
-      // Tambahkan info Izin yang Pending/Ditolak dari DB_IZIN agar tertampil di Kalender Personal
       const myIzin = DB_IZIN.filter(a => a.idKaryawan === currentUser.id);
       myIzin.forEach(iz => {
           iz.tanggalArray.forEach(tgl => {
@@ -2012,9 +2084,6 @@
       }
     }
 
-    // ==========================================
-    // FUNGSI KALENDER TIM (SUPER ADMIN & ADMIN)
-    // ==========================================
     function renderKalenderTim() {
       const val = document.getElementById('filterBulanTim').value; if(!val) return;
       const [y, m] = val.split('-').map(Number);
@@ -2440,10 +2509,8 @@
       }
     }
 
-    // ==========================================
-    // CRUD MANAJEMEN KARYAWAN
-    // ==========================================
-    let modalKaryawanObj = null; let modalHapusObj = null;
+    let modalKaryawanObj = null; let modalHapusObj = null; let modalResetPassObj = null;
+    let currentResetId = "";
 
     function renderTabelKaryawan() {
       const tbody = document.getElementById('tabelKaryawanBody'); tbody.innerHTML = '';
@@ -2482,15 +2549,25 @@
     }
 
     function resetPasswordKaryawan(idKar, namaKar) {
-       if(confirm(`Anda yakin ingin mereset password akun karyawan ${namaKar} ke "karyawan123"?`)) {
-          document.getElementById('loadingText').innerText = "Mereset Password..."; document.getElementById('loadingSpinner').style.display = 'flex';
-          callGAS('resetPasswordGAS', { id: idKar }).then(() => {
-             document.getElementById('loadingSpinner').style.display = 'none';
-             alertNotif(`Password berhasil direset menjadi "karyawan123"`, "success");
-          }).catch(err => {
-             document.getElementById('loadingSpinner').style.display = 'none';
-             alertNotif("Gagal mereset: " + err.message, "danger");
-          });
+       currentResetId = idKar;
+       document.getElementById('konfirmResetMsg').innerHTML = `Anda yakin ingin mereset password akun karyawan <b>${namaKar}</b> ke "karyawan123"?`;
+       if(!modalResetPassObj) modalResetPassObj = new bootstrap.Modal(document.getElementById('modalKonfirmasiReset'));
+       modalResetPassObj.show();
+    }
+
+    async function eksekusiResetPassword() {
+       if(modalResetPassObj) modalResetPassObj.hide();
+       document.getElementById('loadingText').innerText = "Mereset Password..."; 
+       document.getElementById('loadingSpinner').style.display = 'flex';
+       
+       try {
+          await callGAS('resetPasswordGAS', { id: currentResetId });
+          await sinkronisasiDataServer();
+          document.getElementById('loadingSpinner').style.display = 'none';
+          alertNotif(`Password berhasil direset menjadi "karyawan123"`, "success");
+       } catch(err) {
+          document.getElementById('loadingSpinner').style.display = 'none';
+          alertNotif("Gagal mereset: " + err.message, "danger");
        }
     }
 
@@ -2513,7 +2590,7 @@
     }
 
     function bukaModalEdit(id) {
-      const user = DB_USERS.find(u => u.id === id); if(!user) return;
+      const user = DB_USERS.find(u => String(u.id) === String(id)); if(!user) return;
       document.getElementById('editUserId').value = user.id; document.getElementById('inputID').value = user.id; document.getElementById('inputID').readOnly = true; 
       document.getElementById('inputNama').value = user.nama; document.getElementById('inputEmail').value = user.email; document.getElementById('inputPassword').value = user.password;
       document.getElementById('inputPosisi').value = user.posisi; document.getElementById('inputDivisi').value = user.divisi; document.getElementById('inputRole').value = user.role;
@@ -2532,10 +2609,12 @@
       const idKaryawan = document.getElementById('inputID').value.trim(); const nama = document.getElementById('inputNama').value.trim();
       const email = document.getElementById('inputEmail').value.trim(); const password = document.getElementById('inputPassword').value;
       const posisi = document.getElementById('inputPosisi').value.trim(); const divisi = document.getElementById('inputDivisi').value.trim(); const role = document.getElementById('inputRole').value;
-      const tglMasuk = document.getElementById('inputTglMasuk').value;
+      let tglMasuk = document.getElementById('inputTglMasuk').value;
       const statusAktif = document.getElementById('inputStatusAktif').value;
       const tglBerhenti = document.getElementById('inputTglBerhenti').value;
       
+      if (!tglMasuk) tglMasuk = currentDateStr;
+
       if (!idKaryawan || !nama || !email || !password || !posisi || !divisi || !tglMasuk) { alertNotif("Mohon lengkapi form utama.", "warning"); return; }
       if (statusAktif === 'Nonaktif' && !tglBerhenti) { alertNotif("Tgl berhenti wajib diisi jika Nonaktif.", "warning"); return; }
 
@@ -2578,12 +2657,6 @@
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal: " + err.message, "danger");
       }
-    }
-
-    function bukaAdminAbsensi() { 
-       switchPage('pageAdminAbsensi'); 
-       renderAdminAbsensi(); 
-       if(currentUser.role === 'SuperAdmin') renderPersetujuanIzin(); 
     }
 
     function populateAdminFilters() {
@@ -2772,12 +2845,6 @@
           alertNotif("Gagal: " + err.message, "danger");
        }
     }
-
-    // ==========================================
-    // LOGIKA PROFIL USER
-    // ==========================================
-    let modalEditFotoObj = null;
-    let modalGantiPassObj = null;
 
     function setupProfilUI() {
         document.getElementById('profilNamaLengkap').innerText = currentUser.nama;
