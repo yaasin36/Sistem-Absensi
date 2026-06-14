@@ -228,6 +228,7 @@
       aspect-ratio: 1; border-radius: 14px; background: #F3F6F3; 
       display: flex; flex-direction: column; align-items: center; justify-content: center; 
       transition: all 0.2s; border: 1px solid transparent; cursor: pointer;
+      position: relative;
     }
     .calendar-day:hover { background: #E8F5E9; border-color: #C8E6C9; }
     .calendar-day.empty { background: transparent; border: none; cursor: default;}
@@ -305,9 +306,9 @@
       <div class="collapse navbar-collapse" id="navbarNavDesktop">
         <ul class="navbar-nav mx-auto gap-1">
           <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-page="pageDashboard" onclick="switchPage('pageDashboard')">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-page="pageAbsen" onclick="switchPage('pageAbsen')">Kamera</a></li>
+          <li class="nav-item" id="navDesktopAbsen"><a class="nav-link" href="javascript:void(0)" data-page="pageAbsen" onclick="switchPage('pageAbsen')">Kamera</a></li>
           <li class="nav-item" id="navDesktopIzin"><a class="nav-link" href="javascript:void(0)" data-page="pageIzin" onclick="switchPage('pageIzin')">Izin</a></li>
-          <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-page="pageKalender" onclick="bukaKalender()">Riwayat</a></li>
+          <li class="nav-item" id="navDesktopKalender"><a class="nav-link" href="javascript:void(0)" data-page="pageKalender" onclick="bukaKalender()">Riwayat</a></li>
           <li class="nav-item d-none" id="navAdminAbsensi"><a class="nav-link" href="javascript:void(0)" data-page="pageAdminAbsensi" onclick="bukaAdminAbsensi()">Data Tim</a></li>
           <li class="nav-item d-none" id="navManajemen"><a class="nav-link" href="javascript:void(0)" data-page="pageManajemen" onclick="switchPage('pageManajemen')">Karyawan</a></li>
         </ul>
@@ -319,7 +320,7 @@
 
   <!-- Bottom Navigation (Mobile Only) -->
   <div class="bottom-nav-container d-none" id="bottomNav">
-    <div class="fab-center" onclick="switchPage('pageAbsen')" title="Absen Kamera">
+    <div class="fab-center" id="nav-btn-pageAbsen" onclick="switchPage('pageAbsen')" title="Absen Kamera">
       <i class="bi bi-camera-video-fill"></i>
     </div>
     <div class="bottom-nav-bg">
@@ -516,9 +517,7 @@
               </div>
             </div>
             
-            <div id="listIzinUser" class="d-flex flex-column gap-3">
-               <!-- Tabel History Izin User akan digenerate disini -->
-            </div>
+            <div id="listIzinUser" class="d-flex flex-column gap-3"></div>
 
           </div>
         </div>
@@ -584,7 +583,7 @@
       </div>
     </div>
 
-    <!-- PAGE: RIWAYAT (KALENDER) -->
+    <!-- PAGE: RIWAYAT (KALENDER PERSONAL) -->
     <div id="pageKalender" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -600,9 +599,9 @@
             </div>
             
             <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-pill border mb-4 shadow-sm">
-              <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(-1)"><i class="bi bi-chevron-left"></i></button>
+              <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(-1, 'filterBulanUser', renderCalendar)"><i class="bi bi-chevron-left"></i></button>
               <input type="month" id="filterBulanUser" class="form-control text-center fw-bold shadow-none border-0 bg-transparent text-dark w-auto" style="font-size:1rem;" onchange="renderCalendar()">
-              <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(1)"><i class="bi bi-chevron-right"></i></button>
+              <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(1, 'filterBulanUser', renderCalendar)"><i class="bi bi-chevron-right"></i></button>
             </div>
 
             <div class="d-flex flex-wrap justify-content-center gap-3 mb-4 small fw-medium text-muted">
@@ -624,7 +623,7 @@
       </div>
     </div>
 
-    <!-- PAGE: ADMIN - DATA ABSENSI & APPROVAL -->
+    <!-- PAGE: ADMIN - DATA ABSENSI, APPROVAL & KALENDER TIM -->
     <div id="pageAdminAbsensi" class="page">
       <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
@@ -636,7 +635,7 @@
               </div>
               <div>
                 <h5 class="mb-0 fw-bolder">Manajemen Data Tim</h5>
-                <p class="text-muted small mb-0">Pantau kehadiran dan persetujuan izin karyawan.</p>
+                <p class="text-muted small mb-0">Pantau kehadiran dan kelola kalender tim.</p>
               </div>
             </div>
 
@@ -647,6 +646,9 @@
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link rounded-pill fw-bold" id="tab-approval" data-bs-toggle="pill" data-bs-target="#content-approval" type="button" role="tab" style="padding: 10px 24px;">Persetujuan Izin/Cuti</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-bold" id="tab-kalendertim" data-bs-toggle="pill" data-bs-target="#content-kalendertim" type="button" role="tab" style="padding: 10px 24px;" onclick="renderKalenderTim()">Kalender Tim</button>
               </li>
             </ul>
             
@@ -691,13 +693,31 @@
 
               <!-- Tab Content: Persetujuan Izin -->
               <div class="tab-pane fade" id="content-approval" role="tabpanel">
+                <div class="row g-2 mb-4 bg-light p-3 rounded-4 border">
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted ms-1">Filter Tanggal</label>
+                    <input type="date" id="filterIzinTanggal" class="form-control bg-white shadow-sm">
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted ms-1">Posisi</label>
+                    <select id="filterIzinPosisi" class="form-select bg-white shadow-sm"><option value="">Semua Posisi</option></select>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted ms-1">Divisi</label>
+                    <select id="filterIzinDivisi" class="form-select bg-white shadow-sm"><option value="">Semua Divisi</option></select>
+                  </div>
+                  <div class="col-md-3 d-flex align-items-end">
+                    <button onclick="renderPersetujuanIzin()" class="btn-primary-modern w-100 shadow-sm py-2 rounded-3">Cari Pengajuan</button>
+                  </div>
+                </div>
+
                 <div class="table-responsive rounded-4 border">
                   <table class="table table-hover align-middle text-center mb-0">
                     <thead class="table-light">
                       <tr>
-                        <th class="py-3 text-start ps-4">Nama Karyawan</th>
-                        <th class="py-3">Rentang Tanggal</th>
+                        <th class="py-3 text-start ps-4">ID & Nama</th>
                         <th class="py-3">Jenis Izin</th>
+                        <th class="py-3">Rentang Tanggal</th>
                         <th class="py-3">Status</th>
                         <th class="py-3">Aksi</th>
                       </tr>
@@ -708,8 +728,27 @@
                   </table>
                 </div>
               </div>
-            </div>
 
+              <!-- Tab Content: Kalender Tim -->
+              <div class="tab-pane fade" id="content-kalendertim" role="tabpanel">
+                <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-pill border mb-4 shadow-sm" style="max-width: 300px; margin: 0 auto;">
+                  <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(-1, 'filterBulanTim', renderKalenderTim)"><i class="bi bi-chevron-left"></i></button>
+                  <input type="month" id="filterBulanTim" class="form-control text-center fw-bold shadow-none border-0 bg-transparent text-dark w-auto" style="font-size:1rem;" onchange="renderKalenderTim()">
+                  <button class="btn btn-white rounded-circle shadow-sm" style="width: 35px; height: 35px; padding:0;" onclick="ubahBulan(1, 'filterBulanTim', renderKalenderTim)"><i class="bi bi-chevron-right"></i></button>
+                </div>
+                
+                <p class="text-center text-muted small mb-3">Klik pada tanggal untuk melihat rincian kehadiran tim.</p>
+
+                <div class="calendar-grid">
+                  <div class="calendar-day-header">Min</div><div class="calendar-day-header">Sen</div>
+                  <div class="calendar-day-header">Sel</div><div class="calendar-day-header">Rab</div>
+                  <div class="calendar-day-header">Kam</div><div class="calendar-day-header">Jum</div>
+                  <div class="calendar-day-header">Sab</div>
+                </div>
+                <div class="calendar-grid" id="calendarBodyTim"></div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
@@ -896,7 +935,7 @@
     </div>
   </div>
 
-  <!-- Modal Detail Absensi (Tampil untuk Karyawan mengecek Kalender) -->
+  <!-- Modal Detail Absensi (Personal) -->
   <div class="modal fade" id="modalDetailAbsen" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content light-modal">
@@ -961,6 +1000,46 @@
     </div>
   </div>
 
+  <!-- Modal Detail Kalender Tim -->
+  <div class="modal fade" id="modalDetailKalenderTim" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content light-modal rounded-4">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-people-fill text-primary me-2"></i> Rincian Tim</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body py-4">
+          <h6 class="text-center fw-bolder mb-4 text-dark" id="detailTimTglTitle">Senin, 01 Januari 2026</h6>
+          
+          <div class="mb-3">
+             <div class="d-flex align-items-center mb-2">
+                 <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width:25px;height:25px;font-size:0.8rem;"><i class="bi bi-check-lg"></i></div>
+                 <h6 class="fw-bold mb-0 text-dark">Hadir / Masuk <span class="badge bg-light text-muted ms-1 border" id="countMasuk">0</span></h6>
+             </div>
+             <div class="bg-light p-3 rounded-4 border small" id="listTimMasuk">Tidak ada.</div>
+          </div>
+
+          <div class="mb-3">
+             <div class="d-flex align-items-center mb-2">
+                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width:25px;height:25px;font-size:0.8rem;"><i class="bi bi-envelope-paper"></i></div>
+                 <h6 class="fw-bold mb-0 text-dark">Izin / Cuti <span class="badge bg-light text-muted ms-1 border" id="countIzin">0</span></h6>
+             </div>
+             <div class="bg-light p-3 rounded-4 border small" id="listTimIzin">Tidak ada.</div>
+          </div>
+
+          <div>
+             <div class="d-flex align-items-center mb-2">
+                 <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width:25px;height:25px;font-size:0.8rem;"><i class="bi bi-x-lg"></i></div>
+                 <h6 class="fw-bold mb-0 text-dark">Alpa / Belum Absen <span class="badge bg-light text-muted ms-1 border" id="countAlpa">0</span></h6>
+             </div>
+             <div class="bg-light p-3 rounded-4 border small" id="listTimAlpa">Tidak ada.</div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Lihat Foto Bukti -->
   <div class="modal fade" id="modalLihatFoto" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -980,10 +1059,14 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content light-modal rounded-4">
         <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-info-circle text-primary me-2"></i> Detail Pengajuan Izin</h5>
+          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-info-circle text-primary me-2"></i> Detail Pengajuan</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body py-4">
+          <div class="mb-3">
+              <small class="text-muted fw-bold d-block mb-1">ID Izin</small>
+              <span class="badge bg-light border text-primary px-2 py-1" id="detailAdminIdIzin">-</span>
+          </div>
           <div class="mb-3">
               <small class="text-muted fw-bold d-block mb-1">Nama Karyawan</small>
               <span class="fw-bolder text-dark fs-5" id="detailAdminNama">-</span>
@@ -1013,7 +1096,7 @@
     </div>
   </div>
 
-  <!-- Modal Konfirmasi Approval -->
+  <!-- Modal Konfirmasi -->
   <div class="modal fade" id="modalKonfirmasiApproval" tabindex="-1" style="z-index: 1070;">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content light-modal text-center rounded-4 shadow-lg border-0">
@@ -1212,13 +1295,17 @@
                 let activeType = 'Semua';
                 pills.forEach(el => { if(el.classList.contains('active')) activeType = el.innerText === "Absensi" ? "Absen" : (el.innerText === "Riwayat Izin" ? "Izin" : "Semua"); });
                 populateAktivitasDashboard(activeType);
-                renderWeekCalendar();
+                if (currentUser.role !== 'SuperAdmin') renderWeekCalendar();
             }
-            if(document.getElementById('pageAdminAbsensi').classList.contains('active')) { renderAdminAbsensi(); renderPersetujuanIzin(); }
+            if(document.getElementById('pageAdminAbsensi').classList.contains('active')) { 
+                renderAdminAbsensi(); 
+                if (currentUser.role === 'SuperAdmin') renderPersetujuanIzin(); 
+                renderKalenderTim();
+            }
             if(document.getElementById('pageManajemen').classList.contains('active')) renderTabelKaryawan();
-            if(document.getElementById('pageNotifikasi').classList.contains('active')) renderNotifikasi();
-            if(document.getElementById('pageKalender').classList.contains('active')) renderCalendar();
-            if(document.getElementById('pageIzin').classList.contains('active')) renderRiwayatIzinUser();
+            if(document.getElementById('pageNotifikasi').classList.contains('active') && currentUser.role !== 'SuperAdmin') renderNotifikasi();
+            if(document.getElementById('pageKalender').classList.contains('active') && currentUser.role !== 'SuperAdmin') renderCalendar();
+            if(document.getElementById('pageIzin').classList.contains('active') && currentUser.role !== 'SuperAdmin') renderRiwayatIzinUser();
         } catch(err) {
             console.warn("Sinkronisasi ditunda: " + err.message);
         }
@@ -1244,6 +1331,7 @@
     const currentDateStr = `${skrg.getFullYear()}-${String(skrg.getMonth()+1).padStart(2,'0')}-${String(skrg.getDate()).padStart(2,'0')}`;
     document.getElementById('filterBulanUser').value = currentMonthStr;
     document.getElementById('filterAdminTanggal').value = currentDateStr;
+    document.getElementById('filterBulanTim').value = currentMonthStr;
 
     document.getElementById('loginEmail').addEventListener('keypress', function (e) { if (e.key === 'Enter') document.getElementById('btnLogin').click(); });
     document.getElementById('loginPassword').addEventListener('keypress', function (e) { if (e.key === 'Enter') document.getElementById('btnLogin').click(); });
@@ -1312,18 +1400,18 @@
               const pills = document.querySelectorAll('#aktivitasPills .pill-tab');
               if(pills.length > 0) { pills.forEach(el => el.classList.remove('active')); pills[0].classList.add('active'); }
               populateAktivitasDashboard('Semua');
-              renderWeekCalendar();
+              if (currentUser.role !== 'SuperAdmin') renderWeekCalendar();
           } else {
               if(intervalDashboard) clearInterval(intervalDashboard);
           }
 
           if (pageId === 'pageProfil') setupProfilUI();
-          if (pageId === 'pageNotifikasi') renderNotifikasi();
-          if (pageId === 'pageIzin') renderRiwayatIzinUser();
+          if (pageId === 'pageNotifikasi' && currentUser.role !== 'SuperAdmin') renderNotifikasi();
+          if (pageId === 'pageIzin' && currentUser.role !== 'SuperAdmin') renderRiwayatIzinUser();
 
           if(pageId !== 'pageAbsen') {
               stopCamera();
-          } else if (pageId === 'pageAbsen' && currentUser.id !== "") {
+          } else if (pageId === 'pageAbsen' && currentUser.id !== "" && currentUser.role !== 'SuperAdmin') {
               document.getElementById('loadingText').innerText = "Menyiapkan Kamera...";
               document.getElementById('loadingSpinner').style.display = 'flex';
               loadFaceModels().catch(e => { useFaceDetection = false; }).finally(() => {
@@ -1333,7 +1421,11 @@
           }
 
           if(pageId === 'pageManajemen') renderTabelKaryawan(); 
-          if(pageId === 'pageAdminAbsensi') { renderAdminAbsensi(); renderPersetujuanIzin(); }
+          if(pageId === 'pageAdminAbsensi') { 
+              renderAdminAbsensi(); 
+              if (currentUser.role === 'SuperAdmin') renderPersetujuanIzin(); 
+              renderKalenderTim();
+          }
 
       } catch(errorNavigasi) {
           console.error("Navigation error:", errorNavigasi);
@@ -1381,25 +1473,43 @@
       document.getElementById('navManajemen').classList.toggle('d-none', !isPrivileged);
       document.getElementById('navAdminAbsensi').classList.toggle('d-none', !isPrivileged);
 
-      // Sembunyikan Menu Izin HANYA untuk SuperAdmin
-      const navLinkIzinDesktop = document.getElementById('navDesktopIzin');
-      const navLinkIzinMobile = document.getElementById('nav-btn-pageIzin');
+      // PENGATURAN SUPER ADMIN
       if (data.role === 'SuperAdmin') {
-          if(navLinkIzinDesktop) navLinkIzinDesktop.classList.add('d-none');
-          if(navLinkIzinMobile) navLinkIzinMobile.classList.add('d-none');
-      } else {
-          if(navLinkIzinDesktop) navLinkIzinDesktop.classList.remove('d-none');
-          if(navLinkIzinMobile) navLinkIzinMobile.classList.remove('d-none');
-      }
+          // Hilangkan menu Absen (Kamera) & Izin untuk Super Admin
+          document.getElementById('navDesktopAbsen').classList.add('d-none');
+          document.getElementById('nav-btn-pageAbsen').classList.add('d-none');
+          
+          document.getElementById('navDesktopIzin').classList.add('d-none');
+          document.getElementById('nav-btn-pageIzin').classList.add('d-none');
 
-      // Sembunyikan Tab Approval Izin di menu "Data Tim" untuk Admin (Hanya SuperAdmin yang bisa)
-      const tabApproval = document.getElementById('tab-approval');
-      if (tabApproval) {
-          if (data.role === 'SuperAdmin') {
-              tabApproval.parentElement.classList.remove('d-none');
-          } else {
-              tabApproval.parentElement.classList.add('d-none');
-          }
+          // Ubah tombol "Riwayat" agar mengarah ke Kalender Tim di menu Admin Absensi
+          const bRiwayatDesk = document.getElementById('navDesktopKalender');
+          if (bRiwayatDesk) bRiwayatDesk.onclick = () => { switchPage('pageAdminAbsensi'); document.getElementById('tab-kalendertim').click(); };
+          
+          const bRiwayatMob = document.getElementById('nav-btn-pageKalender');
+          if (bRiwayatMob) bRiwayatMob.onclick = () => { switchPage('pageAdminAbsensi'); document.getElementById('tab-kalendertim').click(); };
+          
+          // Munculkan tab Approval Izin
+          const tabApp = document.getElementById('tab-approval');
+          if(tabApp) tabApp.parentElement.classList.remove('d-none');
+      } else {
+          // Munculkan menu Absen (Kamera) & Izin untuk Admin dan User biasa
+          document.getElementById('navDesktopAbsen').classList.remove('d-none');
+          document.getElementById('nav-btn-pageAbsen').classList.remove('d-none');
+          
+          document.getElementById('navDesktopIzin').classList.remove('d-none');
+          document.getElementById('nav-btn-pageIzin').classList.remove('d-none');
+
+          // Kembalikan fungsi tombol "Riwayat" ke kalender personal
+          const bRiwayatDesk = document.getElementById('navDesktopKalender');
+          if (bRiwayatDesk) bRiwayatDesk.onclick = () => { switchPage('pageKalender'); bukaKalender(); };
+          
+          const bRiwayatMob = document.getElementById('nav-btn-pageKalender');
+          if (bRiwayatMob) bRiwayatMob.onclick = () => { switchPage('pageKalender'); bukaKalender(); };
+
+          // Sembunyikan tab Approval Izin HANYA jika bukan SuperAdmin (Admin biasa tidak bisa acc)
+          const tabApp = document.getElementById('tab-approval');
+          if(tabApp) tabApp.parentElement.classList.add('d-none');
       }
 
       simpanSesi();
@@ -1466,12 +1576,6 @@
         populateAktivitasDashboard(tipe);
     }
 
-    function getStatusIzinTerkait(idIzin) {
-        if(!idIzin || idIzin === "-") return "Pending";
-        const dIzin = DB_IZIN.find(i => i.idIzin === idIzin);
-        return dIzin ? dIzin.statusIzin : "Pending";
-    }
-
     function populateAktivitasDashboard(filterType = 'Semua') {
         const today = new Date();
         const strTglHariIni = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
@@ -1489,36 +1593,32 @@
         const container = document.getElementById('containerAktivitasTerbaru');
         container.innerHTML = '';
         
-        let myAbsen = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id).reverse();
+        let myAbsen = [];
         
         if (filterType === 'Absen') {
-            myAbsen = myAbsen.filter(a => a.tipe === 'Masuk' || a.tipe === 'Pulang');
+            myAbsen = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && (a.tipe === 'Masuk' || a.tipe === 'Pulang')).reverse();
         } else if (filterType === 'Izin') {
-            myAbsen = myAbsen.filter(a => a.tipe === 'Izin');
+            myAbsen = DB_IZIN.filter(a => a.idKaryawan === currentUser.id).reverse();
+        } else {
+            // Campur
+            const combined = [
+                ...DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && (a.tipe === 'Masuk' || a.tipe === 'Pulang')),
+                ...DB_IZIN.filter(a => a.idKaryawan === currentUser.id)
+            ];
+            // Urutkan berdasar timestamp desc
+            combined.sort((a,b) => (a.timestamp < b.timestamp) ? 1 : -1);
+            myAbsen = combined;
         }
 
-        // Ambil unique records by date & type to avoid duplicates from multi-day leaves in dashboard
-        let uniqueAbsen = [];
-        let seenSet = new Set();
-        myAbsen.forEach(a => {
-            let key = `${a.tanggal}_${a.tipe}`;
-            if(a.tipe === 'Izin') key = a.idIzin; 
-            
-            if(!seenSet.has(key)) {
-                seenSet.add(key);
-                uniqueAbsen.push(a);
-            }
-        });
-
-        uniqueAbsen = uniqueAbsen.slice(0, 10);
+        myAbsen = myAbsen.slice(0, 10);
         
-        if(uniqueAbsen.length === 0) {
+        if(myAbsen.length === 0) {
             container.innerHTML = `<div class="text-muted small text-center py-3">Belum ada aktivitas terekam.</div>`;
             return;
         }
 
-        uniqueAbsen.forEach(a => {
-            const isIzin = a.tipe === 'Izin';
+        myAbsen.forEach(a => {
+            const isIzin = !!a.idIzin; // Jika punya properti idIzin berarti object dari DB_IZIN
             const iconBg = isIzin ? 'bg-primary bg-opacity-10 text-primary' : (a.tipe === 'Masuk' ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger');
             const iconStr = isIzin ? '<i class="bi bi-envelope-paper-fill"></i>' : (a.tipe === 'Masuk' ? '<i class="bi bi-box-arrow-in-right"></i>' : '<i class="bi bi-box-arrow-left"></i>');
             
@@ -1526,11 +1626,8 @@
             let timeStr = `${a.waktu} WIB • ${formatTanggalIndo(a.tanggal)}`;
 
             if(isIzin) {
-               const dataIzinFull = DB_IZIN.find(iz => iz.idIzin === a.idIzin);
-               const appStatus = dataIzinFull ? dataIzinFull.statusIzin : "Pending";
-               const stIzin = dataIzinFull ? dataIzinFull.tipeIzin : "Izin";
-               titleStr = `Izin ${stIzin} (${appStatus})`;
-               timeStr = dataIzinFull ? dataIzinFull.rentangTanggal : formatTanggalIndo(a.tanggal);
+               titleStr = `Izin ${a.tipeIzin} (${a.statusIzin})`;
+               timeStr = a.rentangTanggal;
             }
 
             container.innerHTML += `
@@ -1568,42 +1665,41 @@
             // Skip notifications for days before joined or after left
             if (dateStr < tglMasukUser || dateStr > tglKeluarUser) continue;
 
-            const records = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && a.tanggal === dateStr);
+            const absRecords = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && a.tanggal === dateStr && a.tipe !== 'Izin');
+            
+            // Cari Izin dari DB_IZIN yang mana tanggalArray nya mengandung dateStr
+            const dIzin = DB_IZIN.find(iz => iz.idKaryawan === currentUser.id && iz.tanggalArray.includes(dateStr));
             
             let dayTitle = i === 0 ? "Hari Ini" : (i === 1 ? "Kemarin" : formatTanggalIndo(dateStr));
             let dayNotifsHTML = '';
 
             if (i === 0) { 
-                const masuk = records.find(a => a.tipe === 'Masuk');
-                const pulang = records.find(a => a.tipe === 'Pulang');
-                const izin = records.find(a => a.tipe === 'Izin');
+                const masuk = absRecords.find(a => a.tipe === 'Masuk');
+                const pulang = absRecords.find(a => a.tipe === 'Pulang');
 
-                if (!masuk && !izin) dayNotifsHTML += buatKartuNotif('bi-exclamation-triangle-fill', 'text-warning', 'bg-warning', 'Belum Absen Masuk', 'Anda belum melakukan absen masuk hari ini. Jangan lupa presensi!', 'Peringatan');
+                if (!masuk && !dIzin) dayNotifsHTML += buatKartuNotif('bi-exclamation-triangle-fill', 'text-warning', 'bg-warning', 'Belum Absen Masuk', 'Anda belum melakukan absen masuk hari ini. Jangan lupa presensi!', 'Peringatan');
                 if (masuk) dayNotifsHTML += buatKartuNotif('bi-box-arrow-in-right', 'text-success', 'bg-success', 'Absen Masuk Berhasil', `Sistem telah mencatat kehadiran masuk Anda.`, masuk.waktu + ' WIB');
                 if (pulang) dayNotifsHTML += buatKartuNotif('bi-box-arrow-left', 'text-danger', 'bg-danger', 'Absen Pulang Berhasil', `Kerja bagus hari ini! Waktu pulang telah tercatat.`, pulang.waktu + ' WIB');
-                if (izin) {
-                   const dataIzin = DB_IZIN.find(iz => iz.idIzin === izin.idIzin);
-                   if (dataIzin) {
-                       dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', 'text-primary', 'bg-primary', `Pengajuan Izin: ${dataIzin.tipeIzin}`, `Status: ${dataIzin.statusIzin}. Ket: ${dataIzin.keterangan}`, 'Info Izin');
-                   }
+                
+                if (dIzin) {
+                   let stColor = dIzin.statusIzin === 'Disetujui' ? 'bg-success' : (dIzin.statusIzin === 'Ditolak' ? 'bg-danger' : 'bg-primary');
+                   let stIcon = dIzin.statusIzin === 'Disetujui' ? 'bi-check-circle-fill' : (dIzin.statusIzin === 'Ditolak' ? 'bi-x-circle-fill' : 'bi-hourglass-split');
+                   let txColor = stColor.replace('bg-', 'text-');
+                   dayNotifsHTML += buatKartuNotif(stIcon, txColor, stColor, `Pengajuan Izin: ${dIzin.tipeIzin}`, `Status: ${dIzin.statusIzin}. Ket: ${dIzin.keterangan}`, 'Info Izin');
                 }
             } else { 
-                const masuk = records.find(a => a.tipe === 'Masuk');
-                const izin = records.find(a => a.tipe === 'Izin');
+                const masuk = absRecords.find(a => a.tipe === 'Masuk');
 
-                if (records.length === 0) {
+                if (absRecords.length === 0 && (!dIzin || dIzin.statusIzin === 'Ditolak')) {
                      const isWeekend = d.getDay() === 0 || d.getDay() === 6;
                      if(!isWeekend) dayNotifsHTML += buatKartuNotif('bi-x-circle-fill', 'text-danger', 'bg-danger', 'Tidak Ada Kehadiran (Alpa)', 'Anda terdeteksi tidak mencatat kehadiran pada hari ini.', 'Sistem');
                      else dayNotifsHTML += buatKartuNotif('bi-calendar-x', 'text-secondary', 'bg-secondary', 'Akhir Pekan / Libur', 'Waktu istirahat Anda.', 'Sistem');
                 } else {
                     if (masuk) dayNotifsHTML += buatKartuNotif('bi-check-circle-fill', 'text-success', 'bg-success', 'Kehadiran Tercatat', `Anda telah absen masuk pada ${masuk.waktu} WIB.`, 'Selesai');
-                    if (izin) {
-                       const dataIzin = DB_IZIN.find(iz => iz.idIzin === izin.idIzin);
-                       if (dataIzin) {
-                           let color = dataIzin.statusIzin === 'Disetujui' ? 'bg-success' : (dataIzin.statusIzin === 'Ditolak' ? 'bg-danger' : 'bg-primary');
-                           let textCol = color.replace('bg-', 'text-');
-                           dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', textCol, color, `Izin/Cuti`, `Status pengajuan: ${dataIzin.statusIzin}.`, 'Selesai');
-                       }
+                    if (dIzin) {
+                       let color = dIzin.statusIzin === 'Disetujui' ? 'bg-success' : (dIzin.statusIzin === 'Ditolak' ? 'bg-danger' : 'bg-primary');
+                       let textCol = color.replace('bg-', 'text-');
+                       dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', textCol, color, `Izin/Cuti`, `Status pengajuan: ${dIzin.statusIzin}.`, 'Selesai');
                     }
                 }
             }
@@ -1772,11 +1868,12 @@
     }
 
     function bukaKalender() { switchPage('pageKalender'); renderCalendar(); }
-    function ubahBulan(step) {
-      const inp = document.getElementById('filterBulanUser'); if(!inp.value) return;
+    
+    function ubahBulan(step, elId, renderFunc) {
+      const inp = document.getElementById(elId); if(!inp.value) return;
       let [year, month] = inp.value.split('-').map(Number); month += step;
       if(month > 12) { month = 1; year++; } else if(month < 1) { month = 12; year--; }
-      inp.value = `${year}-${String(month).padStart(2, '0')}`; renderCalendar();
+      inp.value = `${year}-${String(month).padStart(2, '0')}`; renderFunc();
     }
 
     async function renderCalendar() {
@@ -1800,9 +1897,24 @@
           if(a.tipe === 'Pulang') absMap[a.tanggal].pulang = true;
           if(a.tipe === 'Izin') { 
             absMap[a.tanggal].izin = true; 
-            const izinObj = DB_IZIN.find(iz => iz.idIzin === a.idIzin);
-            absMap[a.tanggal].statusIzin = izinObj ? izinObj.statusIzin : "Pending";
+            // Karena ini dari sheet Absensi (berarti sudah disetujui), kita pastikan stausIzin nya disetujui
+            absMap[a.tanggal].statusIzin = "Disetujui";
           }
+      });
+
+      // Tambahkan info Izin yang Pending/Ditolak dari DB_IZIN agar tetap tertampil kuning/merah di Kalender
+      const myIzin = DB_IZIN.filter(a => a.idKaryawan === currentUser.id);
+      myIzin.forEach(iz => {
+          iz.tanggalArray.forEach(tgl => {
+              if (String(tgl).startsWith(val)) {
+                  if(!absMap[tgl]) absMap[tgl] = { masuk: false, pulang: false, izin: false, statusIzin: "", dataAbsen: [] };
+                  // Timpa status izin dari DB_IZIN jika belum disetujui
+                  if(iz.statusIzin !== 'Disetujui') {
+                      absMap[tgl].izin = true;
+                      absMap[tgl].statusIzin = iz.statusIzin;
+                  }
+              }
+          });
       });
 
       const calBody = document.getElementById('calendarBody'); calBody.innerHTML = '';
@@ -1853,8 +1965,7 @@
       if(statusDot === 'status-leave') {
          cAbsen.classList.add('d-none'); cIzin.classList.remove('d-none');
          
-         const aIzin = DB_ABSENSI.find(a => a.idKaryawan === currentUser.id && a.tanggal === tgl && a.tipe === 'Izin');
-         const dIzin = aIzin ? DB_IZIN.find(iz => iz.idIzin === aIzin.idIzin) : null;
+         const dIzin = DB_IZIN.find(iz => iz.idKaryawan === currentUser.id && iz.tanggalArray.includes(tgl));
          
          document.getElementById('detailJenisIzin').innerText = dIzin ? `${dIzin.tipeIzin} (${dIzin.statusIzin})` : "-";
          document.getElementById('detailKeteranganIzin').innerText = dIzin ? dIzin.keterangan : "-";
@@ -1901,13 +2012,12 @@
       const btn = event.target.closest('button'); const orig = btn.innerHTML;
       btn.innerHTML = 'Menyimpan...'; btn.disabled = true;
 
-      const aIzin = DB_ABSENSI.find(a => a.idKaryawan === currentUser.id && a.tanggal === currentDetailDate && a.tipe === 'Izin');
-      const dIzin = aIzin ? DB_IZIN.find(iz => iz.idIzin === aIzin.idIzin) : null;
+      const dIzin = DB_IZIN.find(iz => iz.idKaryawan === currentUser.id && iz.tanggalArray.includes(currentDetailDate));
 
       if(dIzin) {
          try {
             const b64 = await compressImage(file, 1000, 1000, 0.7); 
-            const urlDrive = await callGAS('updateSuratDokterGAS', { idIzin: dIzin.idIzin, b64: b64 });
+            const urlDrive = await callGAS('updateSuratDokterGAS', { idKaryawan: currentUser.id, tanggal: currentDetailDate, b64: b64 });
             document.getElementById('detailContainerBukti').classList.remove('d-none');
             document.getElementById('linkBuktiIzin').onclick = () => bukaModalFoto(urlDrive);
             alertNotif("Surat dokter berhasil diperbarui!", "success");
@@ -2208,11 +2318,25 @@
              </td>
              <td>
                <button onclick="bukaModalEdit('${u.id}')" class="btn btn-sm btn-light border rounded-circle me-1" title="Edit Data"><i class="bi bi-pencil-fill text-info"></i></button>
-               <button onclick="bukaModalHapus('${u.id}')" class="btn btn-sm btn-light border rounded-circle ${disabledBtn}" title="Hapus Data"><i class="bi bi-trash-fill text-danger"></i></button>
+               <button onclick="bukaModalHapus('${u.id}')" class="btn btn-sm btn-light border rounded-circle me-1 ${disabledBtn}" title="Hapus Data"><i class="bi bi-trash-fill text-danger"></i></button>
+               <button onclick="resetPasswordKaryawan('${u.id}', '${u.nama}')" class="btn btn-sm btn-light border rounded-circle ${disabledBtn}" title="Reset Password"><i class="bi bi-key-fill text-warning"></i></button>
              </td>
            </tr>
          `;
       });
+    }
+
+    function resetPasswordKaryawan(idKar, namaKar) {
+       if(confirm(`Anda yakin ingin mereset password akun karyawan ${namaKar} ke "karyawan123"?`)) {
+          document.getElementById('loadingText').innerText = "Mereset Password..."; document.getElementById('loadingSpinner').style.display = 'flex';
+          callGAS('resetPasswordGAS', { id: idKar }).then(() => {
+             document.getElementById('loadingSpinner').style.display = 'none';
+             alertNotif(`Password berhasil direset menjadi "karyawan123"`, "success");
+          }).catch(err => {
+             document.getElementById('loadingSpinner').style.display = 'none';
+             alertNotif("Gagal mereset: " + err.message, "danger");
+          });
+       }
     }
 
     function toggleTglBerhenti() {
@@ -2301,14 +2425,24 @@
       }
     }
 
-    function bukaAdminAbsensi() { switchPage('pageAdminAbsensi'); renderAdminAbsensi(); renderPersetujuanIzin(); }
+    function bukaAdminAbsensi() { 
+       switchPage('pageAdminAbsensi'); 
+       renderAdminAbsensi(); 
+       if(currentUser.role === 'SuperAdmin') renderPersetujuanIzin(); 
+       renderKalenderTim();
+    }
 
     function populateAdminFilters() {
       const posSet = new Set(); const divSet = new Set();
       DB_USERS.forEach(u => { if(u.posisi) posSet.add(u.posisi); if(u.divisi) divSet.add(u.divisi); });
       const posSelect = document.getElementById('filterAdminPosisi'); const divSelect = document.getElementById('filterAdminDivisi');
-      posSelect.innerHTML = `<option value="">Semua Posisi</option>`; posSet.forEach(p => posSelect.innerHTML += `<option value="${p}">${p}</option>`);
-      divSelect.innerHTML = `<option value="">Semua Divisi</option>`; divSet.forEach(d => divSelect.innerHTML += `<option value="${d}">${d}</option>`);
+      const posSelectIz = document.getElementById('filterIzinPosisi'); const divSelectIz = document.getElementById('filterIzinDivisi');
+      
+      let htmlPos = `<option value="">Semua Posisi</option>`; posSet.forEach(p => htmlPos += `<option value="${p}">${p}</option>`);
+      let htmlDiv = `<option value="">Semua Divisi</option>`; divSet.forEach(d => htmlDiv += `<option value="${d}">${d}</option>`);
+      
+      if(posSelect) posSelect.innerHTML = htmlPos; if(divSelect) divSelect.innerHTML = htmlDiv;
+      if(posSelectIz) posSelectIz.innerHTML = htmlPos; if(divSelectIz) divSelectIz.innerHTML = htmlDiv;
     }
 
     async function renderAdminAbsensi() {
@@ -2328,7 +2462,6 @@
       tbody.innerHTML = ''; let rowCount = 0;
       DB_USERS.forEach(user => {
          if(posFilter && user.posisi !== posFilter) return; if(divFilter && user.divisi !== divFilter) return;
-         
          if (tglFilter < user.tglMasuk) return; 
          if (user.statusAktif === 'Nonaktif' && user.tglBerhenti && tglFilter > user.tglBerhenti) return;
 
@@ -2350,6 +2483,10 @@
     }
 
     function renderPersetujuanIzin() {
+      const tglFilter = document.getElementById('filterIzinTanggal').value;
+      const posFilter = document.getElementById('filterIzinPosisi').value;
+      const divFilter = document.getElementById('filterIzinDivisi').value;
+
       const tbody = document.getElementById('tabelPersetujuanIzinBody');
       const izinData = [...DB_IZIN].reverse(); 
       
@@ -2359,9 +2496,16 @@
          return;
       }
 
+      let rowCount = 0;
       izinData.forEach(izin => {
          let infoUser = DB_USERS.find(u => u.id === izin.idKaryawan);
          let namaUser = infoUser ? infoUser.nama : izin.nama;
+         let posUser = infoUser ? infoUser.posisi : izin.posisi;
+         let divUser = infoUser ? infoUser.divisi : izin.divisi;
+
+         if(posFilter && posUser !== posFilter) return; 
+         if(divFilter && divUser !== divFilter) return;
+         if(tglFilter && !izin.tanggalArray.includes(tglFilter)) return; // Cek apakah tanggal tsb ada di rentang cuti
          
          let st = izin.statusIzin;
          let badgeStatus = '<span class="badge bg-warning text-dark px-3 py-1 rounded-pill">Pending</span>';
@@ -2371,17 +2515,20 @@
          tbody.innerHTML += `
             <tr>
                <td class="text-start">
-                  <span class="fw-bold d-block text-dark">${namaUser}</span>
+                  <span class="fw-bold d-block text-dark">${namaUser} <span class="badge bg-light border text-muted fw-normal ms-1" style="font-size:0.6rem;">${izin.idIzin}</span></span>
                   <small class="text-muted">${izin.rentangTanggal}</small>
                </td>
                <td><span class="fw-bold">${izin.tipeIzin}</span></td>
+               <td>${izin.tanggalArray.length} Hari</td>
                <td>${badgeStatus}</td>
                <td>
                  <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" onclick="bukaDetailIzinAdmin('${izin.idIzin}')">Lihat Detail</button>
                </td>
             </tr>
          `;
+         rowCount++;
       });
+      if(rowCount === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-5 text-muted"><i class="bi bi-inbox fs-2 d-block mb-2"></i>Tidak ada data pengajuan izin sesuai filter.</td></tr>`; }
     }
 
     let modalDetailIzinAdminObj = null;
@@ -2393,6 +2540,7 @@
         if(!izin) return;
         const infoUser = DB_USERS.find(u => u.id === izin.idKaryawan);
         
+        document.getElementById('detailAdminIdIzin').innerText = izin.idIzin;
         document.getElementById('detailAdminNama').innerText = infoUser ? infoUser.nama : izin.nama;
         document.getElementById('detailAdminTanggal').innerText = izin.rentangTanggal;
         document.getElementById('detailAdminJenis').innerText = izin.tipeIzin;
@@ -2435,7 +2583,7 @@
         if (statusBaru === 'Disetujui') {
             icon.className = 'bi bi-check-circle-fill text-success mb-3';
             title.innerText = 'Setujui Izin?';
-            msg.innerHTML = 'Pengajuan izin karyawan ini akan <b>disetujui</b> dan dicatat.';
+            msg.innerHTML = 'Pengajuan izin karyawan ini akan <b>disetujui</b> dan otomatis masuk ke dalam rekap kehadiran.';
             btn.className = 'btn btn-success fw-bold rounded-pill px-4 shadow-sm';
             btn.innerText = 'Ya, Setujui';
         } else {
@@ -2470,6 +2618,91 @@
           alertNotif("Gagal: " + err.message, "danger");
        }
     }
+
+    /* ==========================================
+       KALENDER TIM (ADMIN / SUPER ADMIN)
+    ========================================== */
+    function renderKalenderTim() {
+      const val = document.getElementById('filterBulanTim').value; if(!val) return;
+      const [y, m] = val.split('-').map(Number);
+      const firstDay = new Date(y, m - 1, 1).getDay();
+      const daysInMonth = new Date(y, m, 0).getDate();
+
+      const calBody = document.getElementById('calendarBodyTim'); calBody.innerHTML = '';
+      for(let i = 0; i < firstDay; i++) calBody.innerHTML += `<div class="calendar-day empty"></div>`;
+      for(let d = 1; d <= daysInMonth; d++) {
+        const dStr = String(d).padStart(2, '0'); const loopDate = `${y}-${String(m).padStart(2,'0')}-${dStr}`;
+
+        // Hitung statistik untuk tanggal ini
+        let kMasuk = 0; let kIzin = 0; let kAlpa = 0;
+        
+        DB_USERS.forEach(user => {
+            if (loopDate < user.tglMasuk) return; 
+            if (user.statusAktif === 'Nonaktif' && user.tglBerhenti && loopDate > user.tglBerhenti) return;
+
+            // Hitung masuk
+            const adaMasuk = DB_ABSENSI.find(a => a.idKaryawan === user.id && a.tanggal === loopDate && a.tipe === 'Masuk');
+            if (adaMasuk) { kMasuk++; return; }
+
+            // Hitung izin yang disetujui
+            const adaIzin = DB_ABSENSI.find(a => a.idKaryawan === user.id && a.tanggal === loopDate && a.tipe === 'Izin');
+            if (adaIzin) { kIzin++; return; }
+
+            // Jika hari kerja (Sen-Jum)
+            const dLoop = new Date(loopDate).getDay();
+            if(dLoop !== 0 && dLoop !== 6 && loopDate < currentDateStr) { kAlpa++; }
+        });
+
+        let badgenya = '';
+        if(kMasuk > 0 || kIzin > 0 || kAlpa > 0) {
+            badgenya = `<div class="mt-1 d-flex gap-1" style="font-size:0.65rem;">
+                ${kMasuk > 0 ? `<span class="text-success fw-bold">${kMasuk}M</span>` : ''}
+                ${kIzin > 0 ? `<span class="text-primary fw-bold">${kIzin}I</span>` : ''}
+                ${kAlpa > 0 ? `<span class="text-danger fw-bold">${kAlpa}A</span>` : ''}
+            </div>`;
+        }
+
+        calBody.innerHTML += `
+        <div class="calendar-day shadow-sm position-relative" onclick="lihatDetailKalenderTim('${loopDate}')">
+            <div class="calendar-date text-dark" style="font-size:1rem; margin-top:2px;">${d}</div>
+            ${badgenya}
+        </div>`;
+      }
+    }
+
+    let modalDetailKalenderTimObj = null;
+    function lihatDetailKalenderTim(tgl) {
+        document.getElementById('detailTimTglTitle').innerText = formatTanggalIndo(tgl);
+
+        let mList = []; let iList = []; let aList = [];
+        const isWeekend = (new Date(tgl).getDay() === 0 || new Date(tgl).getDay() === 6);
+
+        DB_USERS.forEach(user => {
+            if (tgl < user.tglMasuk) return; 
+            if (user.statusAktif === 'Nonaktif' && user.tglBerhenti && tgl > user.tglBerhenti) return;
+
+            const adaMasuk = DB_ABSENSI.find(a => a.idKaryawan === user.id && a.tanggal === tgl && a.tipe === 'Masuk');
+            if (adaMasuk) { mList.push(`<div class="mb-1"><span class="fw-bold">${user.nama}</span> <span class="text-muted ms-1">(${adaMasuk.waktu})</span></div>`); return; }
+
+            const adaIzin = DB_ABSENSI.find(a => a.idKaryawan === user.id && a.tanggal === tgl && a.tipe === 'Izin');
+            if (adaIzin) { iList.push(`<div class="mb-1"><span class="fw-bold">${user.nama}</span> <span class="text-muted ms-1">(${adaIzin.keterangan.split(" - ")[0]})</span></div>`); return; }
+
+            if(!isWeekend && tgl < currentDateStr) { aList.push(`<div class="mb-1"><span class="fw-bold">${user.nama}</span></div>`); }
+        });
+
+        document.getElementById('countMasuk').innerText = mList.length;
+        document.getElementById('listTimMasuk').innerHTML = mList.length > 0 ? mList.join('') : '<span class="text-muted">Tidak ada data.</span>';
+
+        document.getElementById('countIzin').innerText = iList.length;
+        document.getElementById('listTimIzin').innerHTML = iList.length > 0 ? iList.join('') : '<span class="text-muted">Tidak ada data.</span>';
+
+        document.getElementById('countAlpa').innerText = aList.length;
+        document.getElementById('listTimAlpa').innerHTML = aList.length > 0 ? aList.join('') : '<span class="text-muted">Tidak ada data.</span>';
+
+        if(!modalDetailKalenderTimObj) modalDetailKalenderTimObj = new bootstrap.Modal(document.getElementById('modalDetailKalenderTim'));
+        modalDetailKalenderTimObj.show();
+    }
+
 
     // ==========================================
     // LOGIKA PROFIL USER
