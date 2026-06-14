@@ -224,7 +224,11 @@
       background: #000; box-shadow: 0 10px 30px rgba(85, 166, 48, 0.1); 
       position: relative; border: 4px solid #FFFFFF;
     }
-    #cameraView { width: 100%; height: auto; display: block; object-fit: contain; position: relative; z-index: 1;}
+    
+    /* Mirror Class (Diatur via JS, diterapkan jika pakai kamera depan) */
+    .mirror-view { transform: scaleX(-1) !important; }
+    
+    #cameraView { width: 100%; height: auto; display: block; object-fit: contain; position: relative; z-index: 1; }
     #canvasPreview { display: none; }
 
     .spinner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255, 0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; }
@@ -591,7 +595,7 @@
               </div>
               <div class="col-6">
                 <button onclick="prosesAmbilAbsen('Pulang')" class="btn btn-clock w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: #FFE4E6; color: #E11D48; border: 1px solid #E11D48; border-radius:16px;">
-                  <i class="bi bi-box-arrow-left fs-3 mb-1"></i> <span class="fw-bolder">PULANG</span>
+                  <i class="bi bi-box-arrow-left fs-3 mb-1"></i> <span class="fw-bold">PULANG</span>
                 </button>
               </div>
             </div>
@@ -661,7 +665,7 @@
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active rounded-pill fw-bold px-4" id="tab-absensi" data-bs-toggle="pill" data-bs-target="#content-absensi" type="button" role="tab" onclick="bukaAdminMenu('absensi', true)">Data Absensi</button>
                 </li>
-                <!-- Tab Approval (SuperAdmin only) -->
+                <!-- Tab Approval (Admin & SuperAdmin) -->
                 <li class="nav-item" role="presentation" id="nav-item-approval">
                   <button class="nav-link rounded-pill fw-bold px-4" id="tab-approval" data-bs-toggle="pill" data-bs-target="#content-approval" type="button" role="tab" onclick="bukaAdminMenu('approval', true)">Persetujuan Izin</button>
                 </li>
@@ -893,16 +897,18 @@
           <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body py-4">
-          <div class="position-relative d-inline-block mb-4">
+          <div class="position-relative d-inline-block mb-4" onclick="document.getElementById('inputFotoProfil').click()" style="cursor: pointer;">
             <div class="act-avatar bg-primary text-white mx-auto shadow-sm m-0 border border-3 border-white" style="width: 100px; height: 100px; font-size: 3rem; border-radius: 50%; overflow: hidden;">
               <img id="imgProfilPreviewModal" src="" class="d-none w-100 h-100 object-fit-cover" onerror="this.classList.add('d-none'); document.getElementById('inisialProfilPreviewModal').classList.remove('d-none');">
               <span id="inisialProfilPreviewModal">U</span>
             </div>
-            <label for="inputFotoProfil" class="position-absolute bottom-0 end-0 bg-white border shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; cursor: pointer; transform: translate(10%, 10%);">
+            <div class="position-absolute bottom-0 end-0 bg-white border shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; transform: translate(10%, 10%);">
               <i class="bi bi-pencil-fill text-primary small"></i>
-            </label>
-            <input type="file" id="inputFotoProfil" class="d-none" accept="image/*" onchange="previewFotoProfil(event)">
+            </div>
           </div>
+          <!-- Input File dipindah ke luar dari div 'onclick' agar dialog muncul di semua device/browser secara konsisten -->
+          <input type="file" id="inputFotoProfil" class="d-none" accept="image/*" onchange="previewFotoProfil(event)">
+          
           <p class="text-muted small mb-4">Pastikan wajah Anda terlihat jelas untuk keperluan validasi absensi.</p>
           <button class="btn btn-primary-modern w-100 rounded-pill fw-bold py-2 shadow-sm" onclick="simpanFotoProfil()">Simpan Foto</button>
         </div>
@@ -944,7 +950,29 @@
         <div class="modal-body py-4 px-3">
           <i class="bi bi-headset text-primary mb-3" style="font-size: 3.5rem;"></i>
           <h5 class="fw-bolder text-dark mb-2">Pusat Bantuan</h5>
-          <p class="text-muted small mb-4">Aplikasi ini dikembangkan oleh <b>Yasinisme Web Dev</b>. Jika Anda mengalami masalah terkait sistem absensi, silakan hubungi Developer.</p>
+          <p class="text-muted small mb-4">Aplikasi ini dikembangkan oleh <b>Yasinisme Web Dev</b>. Jika Anda mengalami masalah terkait sistem absensi, silakan hubungi Developer:</p>
+          
+          <div class="bg-light rounded-4 p-3 mb-4 text-start border shadow-sm">
+             <div class="mb-3 d-flex align-items-center">
+                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border shadow-sm me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                   <i class="bi bi-envelope-fill text-primary fs-5"></i>
+                </div>
+                <div>
+                   <span class="d-block small text-muted fw-bold" style="font-size: 0.7rem;">Email Support</span>
+                   <a href="mailto:ahmadyasin1601@gmail.com" class="text-dark fw-bold small text-decoration-none" style="word-break: break-all;">ahmadyasin1601@gmail.com</a>
+                </div>
+             </div>
+             <div class="d-flex align-items-center">
+                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border shadow-sm me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                   <i class="bi bi-whatsapp text-success fs-5"></i>
+                </div>
+                <div>
+                   <span class="d-block small text-muted fw-bold" style="font-size: 0.7rem;">WhatsApp Dev</span>
+                   <a href="https://wa.me/6285182320091" target="_blank" class="text-dark fw-bold small text-decoration-none">0851-8232-0091</a>
+                </div>
+             </div>
+          </div>
+
           <button class="btn btn-primary-modern w-100 rounded-pill fw-bold py-2 shadow-sm" data-bs-dismiss="modal">Tutup Pesan</button>
         </div>
       </div>
@@ -1242,10 +1270,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // ==========================================
-    // KONFIGURASI GOOGLE APPS SCRIPT (GAS) URL
-    // ==========================================
-    // PASTIKAN MENGGANTI URL DI BAWAH INI DENGAN DEPLOYMENT BARU DARI SCRIPT ANDA
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxsmLcSk7RrpPHxX02spJaHIqAlUG2UEU6xZYZCkDBaHUJW61Ew9WQRDJDofdwRRtA5EA/exec";
 
     async function callGAS(action, data = {}) {
@@ -1330,7 +1354,6 @@
                 populateAktivitasDashboard(activeType);
                 if (currentUser.role !== 'SuperAdmin') renderWeekCalendar();
             }
-            // Auto refresh table based on Admin active tab
             if(document.getElementById('pageAdminAbsensi').classList.contains('active')) { 
                 if(document.getElementById('content-absensi').classList.contains('show')) renderAdminAbsensi();
                 if(document.getElementById('content-approval').classList.contains('show')) renderPersetujuanIzin();
@@ -1355,6 +1378,7 @@
     let faceDetectInterval = null;
     let modelsLoaded = false;
     let useFaceDetection = true; 
+    let isFrontCamera = true;
 
     const videoElement = document.getElementById('cameraView');
     const canvasElement = document.getElementById('canvasPreview');
@@ -1460,7 +1484,6 @@
     }
 
     function bukaAdminMenu(tabName, fromTabClick = false) {
-        // Jika tidak dari klik tab langsung, switch page dan buka tab nya
         if (!fromTabClick) {
             switchPage('pageAdminAbsensi');
             const tabEl = document.querySelector(`#tab-${tabName}`);
@@ -1470,7 +1493,6 @@
             }
         }
 
-        // Sinkronisasi Active State pada Navbar
         setTimeout(() => {
             document.querySelectorAll('.navbar-custom .nav-link').forEach(link => link.classList.remove('active'));
             document.querySelectorAll('.bottom-nav-item').forEach(link => link.classList.remove('active'));
@@ -1545,7 +1567,6 @@
 
       const isPrivileged = data.role === 'SuperAdmin' || data.role === 'Admin';
       
-      // Mengambil elemen navigasi bawah
       const fabCamera = document.getElementById('fab-camera'); 
       const navSpacer = document.getElementById('nav-spacer-left');
       
@@ -1555,9 +1576,7 @@
       const btnRiwayat = document.getElementById('nav-btn-pageKalender');
       const btnDataTim = document.getElementById('nav-btn-pageAdminAbsensi');
       const btnKaryawan = document.getElementById('nav-btn-pageManajemen');
-      const btnProfil = document.getElementById('nav-btn-pageProfil');
 
-      // Mengambil elemen navigasi atas (Desktop)
       const navLinkIzinDesktop = document.getElementById('navDesktopIzin');
       const navLinkAbsenDesktop = document.getElementById('navDesktopAbsen');
       const navLinkRiwayatDesktop = document.getElementById('navDesktopKalender');
@@ -1566,84 +1585,62 @@
       const navLinkManajemenDesktop = document.getElementById('navManajemen');
 
       if (data.role === 'SuperAdmin') {
-          // Bottom Nav Super Admin (5 item: Home, Kalender, Data Tim, Karyawan, Profil)
           if(fabCamera) fabCamera.classList.add('d-none');
           if(navSpacer) navSpacer.classList.add('d-none');
-          
           if(btnIzin) btnIzin.classList.add('d-none');
           if(btnRiwayat) btnRiwayat.classList.add('d-none');
-          
           if(btnKalTim) btnKalTim.classList.remove('d-none');
           if(btnDataTim) btnDataTim.classList.remove('d-none');
           if(btnKaryawan) btnKaryawan.classList.remove('d-none');
 
-          // Desktop Nav
           if(navLinkAbsenDesktop) navLinkAbsenDesktop.classList.add('d-none');
           if(navLinkIzinDesktop) navLinkIzinDesktop.classList.add('d-none');
           if(navLinkRiwayatDesktop) navLinkRiwayatDesktop.classList.add('d-none');
-          
           if(navLinkKalenderTimDesktop) navLinkKalenderTimDesktop.classList.remove('d-none');
           if(navLinkAdminAbsensiDesktop) navLinkAdminAbsensiDesktop.classList.remove('d-none');
           if(navLinkManajemenDesktop) navLinkManajemenDesktop.classList.remove('d-none');
 
       } else if (data.role === 'Admin') {
-          // Bottom Nav Admin (User + Data Tim: Home, Izin, Kamera, Data Tim, Profil)
           if(fabCamera) fabCamera.classList.remove('d-none');
           if(navSpacer) navSpacer.classList.remove('d-none');
-          
           if(btnIzin) btnIzin.classList.remove('d-none'); 
           if(btnDataTim) btnDataTim.classList.remove('d-none'); 
-          
           if(btnKalTim) btnKalTim.classList.add('d-none');
           if(btnRiwayat) btnRiwayat.classList.add('d-none');
           if(btnKaryawan) btnKaryawan.classList.add('d-none');
 
-          // Desktop Nav
-          if(navLinkAbsenDesktop) navLinkAbsenDesktop.classList.remove('d-none');
-          if(navLinkIzinDesktop) navLinkIzinDesktop.classList.remove('d-none');
-          if(navLinkRiwayatDesktop) navLinkRiwayatDesktop.classList.remove('d-none');
-          
-          if(navLinkKalenderTimDesktop) navLinkKalenderTimDesktop.classList.remove('d-none');
-          if(navLinkAdminAbsensiDesktop) navLinkAdminAbsensiDesktop.classList.remove('d-none');
-          if(navLinkManajemenDesktop) navLinkManajemenDesktop.classList.remove('d-none');
-
-      } else {
-          // Bottom Nav User (Home, Izin, Kamera, Riwayat, Profil)
-          if(fabCamera) fabCamera.classList.remove('d-none');
-          if(navSpacer) navSpacer.classList.remove('d-none');
-          
-          if(btnIzin) btnIzin.classList.remove('d-none'); 
-          if(btnRiwayat) btnRiwayat.classList.remove('d-none'); 
-          
-          if(btnKalTim) btnKalTim.classList.add('d-none');
-          if(btnDataTim) btnDataTim.classList.add('d-none');
-          if(btnKaryawan) btnKaryawan.classList.add('d-none');
-
-          // Desktop Nav
           if(navLinkAbsenDesktop) navLinkAbsenDesktop.classList.remove('d-none');
           if(navLinkIzinDesktop) navLinkIzinDesktop.classList.remove('d-none');
           if(navLinkRiwayatDesktop) navLinkRiwayatDesktop.classList.remove('d-none');
           
           if(navLinkKalenderTimDesktop) navLinkKalenderTimDesktop.classList.add('d-none');
+          if(navLinkAdminAbsensiDesktop) navLinkAdminAbsensiDesktop.classList.remove('d-none');
+          if(navLinkManajemenDesktop) navLinkManajemenDesktop.classList.add('d-none');
+
+      } else {
+          if(fabCamera) fabCamera.classList.remove('d-none');
+          if(navSpacer) navSpacer.classList.remove('d-none');
+          if(btnIzin) btnIzin.classList.remove('d-none'); 
+          if(btnRiwayat) btnRiwayat.classList.remove('d-none'); 
+          if(btnKalTim) btnKalTim.classList.add('d-none');
+          if(btnDataTim) btnDataTim.classList.add('d-none');
+          if(btnKaryawan) btnKaryawan.classList.add('d-none');
+
+          if(navLinkAbsenDesktop) navLinkAbsenDesktop.classList.remove('d-none');
+          if(navLinkIzinDesktop) navLinkIzinDesktop.classList.remove('d-none');
+          if(navLinkRiwayatDesktop) navLinkRiwayatDesktop.classList.remove('d-none');
+          if(navLinkKalenderTimDesktop) navLinkKalenderTimDesktop.classList.add('d-none');
           if(navLinkAdminAbsensiDesktop) navLinkAdminAbsensiDesktop.classList.add('d-none');
           if(navLinkManajemenDesktop) navLinkManajemenDesktop.classList.add('d-none');
       }
 
-      // Sembunyikan Tab Approval Izin di menu "Data Tim" untuk Admin (Hanya SuperAdmin yang bisa acc)
       const tabApproval = document.getElementById('tab-approval');
       if (tabApproval) {
-          if (data.role === 'SuperAdmin') {
+          if (data.role === 'SuperAdmin' || data.role === 'Admin') {
               tabApproval.parentElement.classList.remove('d-none');
           } else {
               tabApproval.parentElement.classList.add('d-none');
           }
-      }
-      
-      // Tampilkan Menu Tambahan di halaman Profil untuk Admin/SuperAdmin yang buka via HP
-      const menuAdminProfil = document.getElementById('menuAdminKhusus');
-      if(menuAdminProfil) {
-          if(isPrivileged) menuAdminProfil.classList.remove('d-none');
-          else menuAdminProfil.classList.add('d-none');
       }
 
       simpanSesi();
@@ -2350,8 +2347,8 @@
       }
 
       const videoSource = document.getElementById('videoSource').value;
-      
       let videoConstraints = { facingMode: "user" }; 
+      
       if (videoSource) {
           videoConstraints = { deviceId: { exact: videoSource } };
       }
@@ -2359,6 +2356,31 @@
       try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
         videoElement.srcObject = localStream;
+        
+        isFrontCamera = true;
+        const videoSelectObj = document.getElementById('videoSource');
+        if (videoSelectObj.selectedIndex >= 0 && videoSelectObj.value !== "") {
+             const selectedText = videoSelectObj.options[videoSelectObj.selectedIndex].text.toLowerCase();
+             if (selectedText.includes('back') || selectedText.includes('belakang') || selectedText.includes('environment')) {
+                 isFrontCamera = false;
+             }
+        }
+        
+        if (localStream.getVideoTracks().length > 0) {
+             const settings = localStream.getVideoTracks()[0].getSettings();
+             if (settings.facingMode && settings.facingMode === 'environment') {
+                 isFrontCamera = false;
+             }
+        }
+
+        if (isFrontCamera) {
+            videoElement.classList.add('mirror-view');
+            document.getElementById('faceOverlay').classList.add('mirror-view');
+        } else {
+            videoElement.classList.remove('mirror-view');
+            document.getElementById('faceOverlay').classList.remove('mirror-view');
+        }
+
         videoElement.onloadedmetadata = () => { 
             videoElement.play().catch(e => console.error("Video play error:", e)); 
             setupFaceDetection(); 
@@ -2371,24 +2393,38 @@
                 const videoSelect = document.getElementById('videoSource');
                 videoSelect.innerHTML = ''; 
                 let hasCamera = false;
+                let camCount = 1;
                 devices.forEach(device => {
                   if (device.kind === 'videoinput') {
                     hasCamera = true;
                     const option = document.createElement('option');
                     option.value = device.deviceId; 
-                    option.text = device.label || `Kamera ${videoSelect.length + 1}`;
+                    option.text = device.label || `Kamera ${camCount++}`;
+                    
+                    if (localStream.getVideoTracks()[0].label === device.label) {
+                        option.selected = true;
+                    }
                     videoSelect.appendChild(option);
                   }
                 });
-                if(!hasCamera) videoSelect.innerHTML = '<option value="">Default Kamera</option>';
+                
+                if(!hasCamera) {
+                    videoSelect.innerHTML = '<option value="">Kamera Default (Depan)</option>';
+                } else if (devices.filter(d => d.kind === 'videoinput').length === 1 && !devices[0].label) {
+                    videoSelect.innerHTML = '<option value="">Kamera Default</option>';
+                }
             } catch(e) { console.warn("Tidak dapat membaca list kamera:", e); }
         }
       } catch (errUtama) { 
-          console.warn("Kamera depan gagal, melakukan Bypass Mode...", errUtama.name);
-          
+          console.warn("Kamera utama gagal, mencoba Bypass Mode...", errUtama.name);
           try {
              localStream = await navigator.mediaDevices.getUserMedia({ video: true });
              videoElement.srcObject = localStream;
+             
+             isFrontCamera = true;
+             videoElement.classList.add('mirror-view');
+             document.getElementById('faceOverlay').classList.add('mirror-view');
+
              videoElement.onloadedmetadata = () => { 
                  videoElement.play().catch(e => console.error("Video play error:", e)); 
                  setupFaceDetection(); 
@@ -2476,8 +2512,17 @@
       const targetWidth = 640; const targetHeight = (vHeight / vWidth) * targetWidth;
       
       canvasElement.width = targetWidth; canvasElement.height = targetHeight; 
+      
+      if (isFrontCamera) {
+          ctx.translate(targetWidth, 0);
+          ctx.scale(-1, 1);
+      }
       ctx.drawImage(videoElement, 0, 0, targetWidth, targetHeight);
       
+      if (isFrontCamera) {
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+      }
+
       const skrg = new Date();
       const strTanggal = `${skrg.getFullYear()}-${String(skrg.getMonth()+1).padStart(2,'0')}-${String(skrg.getDate()).padStart(2,'0')}`;
       const strWaktu = `${String(skrg.getHours()).padStart(2,'0')}:${String(skrg.getMinutes()).padStart(2,'0')}:${String(skrg.getSeconds()).padStart(2,'0')}`;
@@ -2732,7 +2777,7 @@
 
          if(posFilter && posUser !== posFilter) return; 
          if(divFilter && divUser !== divFilter) return;
-         if(tglFilter && !izin.tanggalArray.includes(tglFilter)) return; // Cek apakah tanggal tsb ada di rentang cuti
+         if(tglFilter && !izin.tanggalArray.includes(tglFilter)) return; 
          
          let st = izin.statusIzin;
          let badgeStatus = '<span class="badge bg-warning text-dark px-3 py-1 rounded-pill">Pending</span>';
@@ -2864,9 +2909,16 @@
         }
     }
 
+    let tempFotoB64 = "";
+    let modalEditFotoObj = null;
+    let modalGantiPassObj = null;
+
     function bukaModalEditFoto() {
+        tempFotoB64 = "";
         const imgPreview = document.getElementById('imgProfilPreviewModal');
         const inisialPreview = document.getElementById('inisialProfilPreviewModal');
+        
+        document.getElementById('inputFotoProfil').value = ''; 
         
         if (currentUser.fotoProfil && currentUser.fotoProfil !== "" && currentUser.fotoProfil !== "-") {
             imgPreview.src = currentUser.fotoProfil;
@@ -2877,8 +2929,6 @@
             inisialPreview.classList.remove('d-none');
             inisialPreview.innerText = currentUser.nama.charAt(0).toUpperCase();
         }
-        
-        document.getElementById('inputFotoProfil').removeAttribute('data-b64'); 
         
         if(!modalEditFotoObj) modalEditFotoObj = new bootstrap.Modal(document.getElementById('modalEditFoto'));
         modalEditFotoObj.show();
@@ -2894,36 +2944,47 @@
            imgPreview.classList.remove('d-none');
            document.getElementById('inisialProfilPreviewModal').classList.add('d-none');
            
-           document.getElementById('inputFotoProfil').setAttribute('data-b64', b64);
+           tempFotoB64 = b64;
         } catch(e) {
-           alertNotif("Gagal membaca file gambar", "danger");
+           console.log("Kompresi gagal, pakai base64 asli");
+           try {
+              const b64 = await fileToBase64(file);
+              const imgPreview = document.getElementById('imgProfilPreviewModal');
+              imgPreview.src = b64;
+              imgPreview.classList.remove('d-none');
+              document.getElementById('inisialProfilPreviewModal').classList.add('d-none');
+              
+              tempFotoB64 = b64;
+           } catch(err) {
+              alertNotif("Gagal membaca file gambar", "danger");
+           }
         }
       }
     }
 
     async function simpanFotoProfil() {
-        const fotoInput = document.getElementById('inputFotoProfil');
-        const fotoBaru = fotoInput.getAttribute('data-b64');
-        
-        if(fotoBaru) {
-            document.getElementById('loadingText').innerText = "Mengupload Foto...";
-            document.getElementById('loadingSpinner').style.display = 'flex';
-
-            try {
-                const urlDrive = await callGAS('updateProfilGAS', { id: currentUser.id, field: "foto", value: fotoBaru });
-                currentUser.fotoProfil = urlDrive; 
-                simpanSesi();
-                setupProfilUI();
-                renderAvatarDashboard();
-                await sinkronisasiDataServer();
-                document.getElementById('loadingSpinner').style.display = 'none';
-                alertNotif("Foto Profil berhasil diperbarui!", "success");
-            } catch(err) {
-                document.getElementById('loadingSpinner').style.display = 'none';
-                alertNotif("Gagal upload foto: " + err.message, "danger");
-            }
+        if(!tempFotoB64) {
+            alertNotif("Pilih foto terlebih dahulu!", "warning");
+            return;
         }
-        if(modalEditFotoObj) modalEditFotoObj.hide();
+
+        document.getElementById('loadingText').innerText = "Mengupload Foto...";
+        document.getElementById('loadingSpinner').style.display = 'flex';
+
+        try {
+            const urlDrive = await callGAS('updateProfilGAS', { id: currentUser.id, field: "foto", value: tempFotoB64 });
+            currentUser.fotoProfil = urlDrive; 
+            simpanSesi();
+            setupProfilUI();
+            renderAvatarDashboard();
+            await sinkronisasiDataServer();
+            document.getElementById('loadingSpinner').style.display = 'none';
+            alertNotif("Foto Profil berhasil diperbarui!", "success");
+            if(modalEditFotoObj) modalEditFotoObj.hide();
+        } catch(err) {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            alertNotif("Gagal upload foto: " + err.message, "danger");
+        }
     }
 
     function bukaModalGantiPassword() {
@@ -2941,7 +3002,7 @@
       const passKonfirmasi = document.getElementById('inputKonfirmasiPassword').value;
 
       if (passLama === '' || passBaru === '' || passKonfirmasi === '') { alertNotif("Mohon isi semua bidang password!", "warning"); return; }
-      if (passLama !== currentUser.password) { alertNotif("Password lama Anda salah!", "danger"); return; }
+      if (String(passLama) !== String(currentUser.password)) { alertNotif("Password lama Anda salah!", "danger"); return; }
       if (passBaru !== passKonfirmasi) { alertNotif("Konfirmasi password baru tidak cocok!", "warning"); return; }
       
       document.getElementById('loadingText').innerText = "Memperbarui Password...";
