@@ -639,18 +639,20 @@
               </div>
             </div>
 
-            <!-- Tab Navigation Admin -->
-            <ul class="nav nav-pills mb-4 border-bottom pb-3 gap-2" id="adminTabs" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active rounded-pill fw-bold" id="tab-absensi" data-bs-toggle="pill" data-bs-target="#content-absensi" type="button" role="tab" style="padding: 10px 24px;">Data Absensi</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-pill fw-bold" id="tab-approval" data-bs-toggle="pill" data-bs-target="#content-approval" type="button" role="tab" style="padding: 10px 24px;">Persetujuan Izin/Cuti</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-pill fw-bold" id="tab-kalendertim" data-bs-toggle="pill" data-bs-target="#content-kalendertim" type="button" role="tab" style="padding: 10px 24px;" onclick="renderKalenderTim()">Kalender Tim</button>
-              </li>
-            </ul>
+            <!-- Tab Navigation Admin with scroll-x for mobile -->
+            <div class="scroll-x mb-4 border-bottom pb-2">
+              <ul class="nav nav-pills flex-nowrap gap-2" id="adminTabs" role="tablist" style="white-space: nowrap;">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active rounded-pill fw-bold px-4" id="tab-absensi" data-bs-toggle="pill" data-bs-target="#content-absensi" type="button" role="tab">Data Absensi</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link rounded-pill fw-bold px-4" id="tab-approval" data-bs-toggle="pill" data-bs-target="#content-approval" type="button" role="tab">Persetujuan Izin</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link rounded-pill fw-bold px-4" id="tab-kalendertim" data-bs-toggle="pill" data-bs-target="#content-kalendertim" type="button" role="tab" onclick="renderKalenderTim()">Kalender Tim</button>
+                </li>
+              </ul>
+            </div>
             
             <div class="tab-content" id="adminTabContent">
               <!-- Tab Content: Data Absensi -->
@@ -674,7 +676,7 @@
                 </div>
 
                 <div class="table-responsive rounded-4 border">
-                  <table class="table table-hover align-middle text-center mb-0">
+                  <table class="table table-hover align-middle text-center mb-0 text-nowrap">
                     <thead class="table-light">
                       <tr>
                         <th class="py-3 text-start ps-4">Nama</th>
@@ -712,7 +714,7 @@
                 </div>
 
                 <div class="table-responsive rounded-4 border">
-                  <table class="table table-hover align-middle text-center mb-0">
+                  <table class="table table-hover align-middle text-center mb-0 text-nowrap">
                     <thead class="table-light">
                       <tr>
                         <th class="py-3 text-start ps-4">ID & Nama</th>
@@ -775,7 +777,7 @@
             </div>
             
             <div class="table-responsive rounded-4 border">
-              <table class="table table-hover align-middle text-center mb-0">
+              <table class="table table-hover align-middle text-center mb-0 text-nowrap">
                 <thead class="table-light">
                   <tr>
                     <th class="py-3">ID</th>
