@@ -1136,6 +1136,14 @@
       }
     }
 
+    // Fungsi Helper Formatter Tanggal 
+    function formatDateString(dateVal) {
+        if (!dateVal) return "";
+        const dStr = String(dateVal);
+        if (dStr.includes('T')) return dStr.split('T')[0];
+        return dStr.substring(0, 10);
+    }
+
     // ==========================================
     // INTEGRASI FRONTEND LOGIC
     // ==========================================
@@ -1165,10 +1173,16 @@
         sinkronisasiDataServer();
     });
 
-    function sinkronisasiDataServer() {
-        callGAS('getInitData').then(data => {
+    async function sinkronisasiDataServer() {
+        try {
+            const data = await callGAS('getInitData');
             DB_USERS = data.users;
-            DB_ABSENSI = data.absensi;
+            
+            // Format ulang tanggal agar pasti "YYYY-MM-DD" dan tidak terpengaruh Timezone/ISO
+            DB_ABSENSI = data.absensi.map(a => ({
+                ...a,
+                tanggal: formatDateString(a.tanggal)
+            }));
             
             // Auto-refresh tables if they are open
             if(document.getElementById('pageDashboard').classList.contains('active')) {
@@ -1182,7 +1196,9 @@
             if(document.getElementById('pageManajemen').classList.contains('active')) renderTabelKaryawan();
             if(document.getElementById('pageNotifikasi').classList.contains('active')) renderNotifikasi();
             if(document.getElementById('pageKalender').classList.contains('active')) renderCalendar();
-        }).catch(err => console.warn("Sinkronisasi ditunda: " + err.message));
+        } catch(err) {
+            console.warn("Sinkronisasi ditunda: " + err.message);
+        }
     }
 
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -1328,13 +1344,15 @@
 
       try {
           const user = await callGAS('prosesLoginGAS', { email: inputEmail, password: inputPassword });
-          document.getElementById('loadingSpinner').style.display = 'none';
-          document.getElementById('btnLogin').disabled = false;
           
           if(user) {
               setupUserSession(user);
-              sinkronisasiDataServer(); 
+              await sinkronisasiDataServer(); 
+              document.getElementById('loadingSpinner').style.display = 'none';
+              document.getElementById('btnLogin').disabled = false;
           } else {
+              document.getElementById('loadingSpinner').style.display = 'none';
+              document.getElementById('btnLogin').disabled = false;
               alertNotif("Email atau password salah / Akun tidak aktif.", "danger");
           }
       } catch (err) {
@@ -1571,7 +1589,7 @@
       const payload = {
           idKaryawan: currentUser.id,
           nama: currentUser.nama,
-          tanggal: tgl,  // Tambahan penting untuk Backend
+          tanggal: tgl, 
           tipe: "Izin",
           keterangan: jenis + " - " + ket,
           fotoBase64: buktiDataUrl,
@@ -1580,10 +1598,10 @@
 
       try {
           await callGAS('simpanAbsenGAS', payload);
+          await sinkronisasiDataServer(); // Menunggu data baru tertarik penuh
           document.getElementById('formPengajuanIzin').reset(); toggleSuratDokter();
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif(`Pengajuan ${jenis} berhasil tersimpan!`, "success");
-          sinkronisasiDataServer();
           switchPage('pageDashboard');
       } catch (err) {
           document.getElementById('loadingSpinner').style.display = 'none';
@@ -1606,7 +1624,7 @@
       const daysInMonth = new Date(y, m, 0).getDate();
       const todayStr = `${skrg.getFullYear()}-${String(skrg.getMonth()+1).padStart(2,'0')}-${String(skrg.getDate()).padStart(2,'0')}`;
 
-      const usrAbs = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && a.tanggal.startsWith(val));
+      const usrAbs = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && String(a.tanggal).startsWith(val));
       const absMap = {};
       usrAbs.forEach(a => {
           if(!absMap[a.tanggal]) absMap[a.tanggal] = { masuk: false, pulang: false, izin: false };
@@ -1694,7 +1712,7 @@
             document.getElementById('detailContainerBukti').classList.remove('d-none');
             document.getElementById('linkBuktiIzin').href = urlDrive;
             alertNotif("Surat dokter berhasil diperbarui!", "success");
-            sinkronisasiDataServer();
+            await sinkronisasiDataServer(); // Menunggu data baru tertarik
             btn.innerHTML = orig; btn.disabled = false;
          } catch (e) { 
             alertNotif("Gagal memproses file. " + e.message, "danger"); 
@@ -1922,10 +1940,10 @@
 
       try {
           await callGAS('simpanAbsenGAS', payload);
+          await sinkronisasiDataServer(); // Menunggu data terbaru tertarik dari server
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif(`Berhasil absen ${tipe} pada ${strWaktu} WIB`, "success");
-          sinkronisasiDataServer(); 
-          switchPage('pageDashboard');
+          switchPage('pageDashboard'); // Akan terupdate dengan data terbaru
       } catch(err) {
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal: " + err.message, "danger");
@@ -1999,10 +2017,10 @@
 
       try {
           await callGAS('simpanKaryawanGAS', { payload: payload, isEdit: !!editId });
+          await sinkronisasiDataServer(); 
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Data karyawan tersimpan!", "success");
           if(modalKaryawanObj) modalKaryawanObj.hide(); 
-          sinkronisasiDataServer(); 
       } catch(err) {
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal: " + err.message, "danger");
@@ -2020,10 +2038,10 @@
       
       try {
           await callGAS('hapusKaryawanGAS', id);
+          await sinkronisasiDataServer(); 
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif(`Karyawan ${id} dihapus.`, "success");
           if(modalHapusObj) modalHapusObj.hide(); 
-          sinkronisasiDataServer(); 
       } catch(err) {
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal: " + err.message, "danger");
@@ -2149,9 +2167,9 @@
                 simpanSesi();
                 setupProfilUI();
                 renderAvatarDashboard();
+                await sinkronisasiDataServer();
                 document.getElementById('loadingSpinner').style.display = 'none';
                 alertNotif("Foto Profil berhasil diperbarui!", "success");
-                sinkronisasiDataServer();
             } catch(err) {
                 document.getElementById('loadingSpinner').style.display = 'none';
                 alertNotif("Gagal upload foto: " + err.message, "danger");
@@ -2185,10 +2203,10 @@
           await callGAS('updateProfilGAS', { id: currentUser.id, field: "password", value: passBaru });
           currentUser.password = passBaru;
           simpanSesi(); 
+          await sinkronisasiDataServer();
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Password berhasil diperbarui!", "success");
           if(modalGantiPassObj) modalGantiPassObj.hide();
-          sinkronisasiDataServer();
       } catch(err) {
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal update password: " + err.message, "danger");
