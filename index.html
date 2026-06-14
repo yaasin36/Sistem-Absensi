@@ -306,7 +306,7 @@
         <ul class="navbar-nav mx-auto gap-1">
           <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-page="pageDashboard" onclick="switchPage('pageDashboard')">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-page="pageAbsen" onclick="switchPage('pageAbsen')">Kamera</a></li>
-          <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-page="pageIzin" onclick="switchPage('pageIzin')">Izin</a></li>
+          <li class="nav-item" id="navDesktopIzin"><a class="nav-link" href="javascript:void(0)" data-page="pageIzin" onclick="switchPage('pageIzin')">Izin</a></li>
           <li class="nav-item"><a class="nav-link" href="javascript:void(0)" data-page="pageKalender" onclick="bukaKalender()">Riwayat</a></li>
           <li class="nav-item d-none" id="navAdminAbsensi"><a class="nav-link" href="javascript:void(0)" data-page="pageAdminAbsensi" onclick="bukaAdminAbsensi()">Data Tim</a></li>
           <li class="nav-item d-none" id="navManajemen"><a class="nav-link" href="javascript:void(0)" data-page="pageManajemen" onclick="switchPage('pageManajemen')">Karyawan</a></li>
@@ -461,14 +461,14 @@
     <div id="pageIzin" class="page">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-          <div class="modern-card p-4 mt-2">
+          <div class="modern-card p-4 mt-2 mb-4">
             <div class="d-flex align-items-center mb-4">
               <div class="act-avatar m-0 me-3 shadow-sm bg-white border text-primary">
                 <i class="bi bi-envelope-paper"></i>
               </div>
               <div>
-                <h5 class="mb-0 fw-bolder">Form Pengajuan Izin</h5>
-                <p class="text-muted small mb-0">Lengkapi data untuk mengajukan cuti/izin.</p>
+                <h5 class="mb-0 fw-bolder">Pengajuan Izin/Cuti</h5>
+                <p class="text-muted small mb-0">Lengkapi data untuk mengajukan absen.</p>
               </div>
             </div>
 
@@ -500,10 +500,26 @@
                 <label class="form-label small fw-bold text-muted ms-1">Alasan / Keterangan</label>
                 <textarea id="inputKetIzin" class="form-control" rows="3" placeholder="Jelaskan secara singkat..." required></textarea>
               </div>
-              <button onclick="simpanIzin()" class="btn-primary-modern w-100 shadow-sm rounded-pill py-3 fs-6">
+              <button onclick="simpanIzin()" class="btn-primary-modern w-100 shadow-sm rounded-pill py-3 fs-6 mb-2">
                 Ajukan Sekarang
               </button>
             </form>
+            
+            <hr class="my-5" style="border-color: #E2E8F0;">
+            <div class="d-flex align-items-center mb-4">
+              <div class="act-avatar m-0 me-3 shadow-sm bg-light border text-primary">
+                <i class="bi bi-clock-history"></i>
+              </div>
+              <div>
+                <h6 class="mb-0 fw-bolder">Riwayat Pengajuan Izin</h6>
+                <p class="text-muted small mb-0">Pantau status izin Anda.</p>
+              </div>
+            </div>
+            
+            <div id="listIzinUser" class="d-flex flex-column gap-3">
+               <!-- Tabel History Izin User akan digenerate disini -->
+            </div>
+
           </div>
         </div>
       </div>
@@ -681,13 +697,12 @@
                       <tr>
                         <th class="py-3 text-start ps-4">Nama & Tanggal</th>
                         <th class="py-3">Jenis Izin</th>
-                        <th class="py-3">Bukti</th>
                         <th class="py-3">Status</th>
                         <th class="py-3">Aksi</th>
                       </tr>
                     </thead>
                     <tbody id="tabelPersetujuanIzinBody">
-                      <tr><td colspan="5" class="py-5 text-muted fw-medium">Memuat data izin...</td></tr>
+                      <tr><td colspan="4" class="py-5 text-muted fw-medium">Memuat data izin...</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -880,7 +895,7 @@
     </div>
   </div>
 
-  <!-- Modal Detail Absensi -->
+  <!-- Modal Detail Absensi (Tampil untuk Karyawan mengecek Kalender) -->
   <div class="modal fade" id="modalDetailAbsen" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content light-modal">
@@ -954,6 +969,44 @@
         </div>
         <div class="modal-body p-0 text-center position-relative">
           <img id="imgBuktiPreview" src="" class="img-fluid rounded-4 shadow-lg" alt="Bukti Foto" style="max-height: 85vh; object-fit: contain; background-color: #000;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detail Izin Admin -->
+  <div class="modal fade" id="modalDetailIzinAdmin" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content light-modal rounded-4">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-dark"><i class="bi bi-info-circle text-primary me-2"></i> Detail Pengajuan Izin</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body py-4">
+          <div class="mb-3">
+              <small class="text-muted fw-bold d-block mb-1">Nama Karyawan</small>
+              <span class="fw-bolder text-dark fs-5" id="detailAdminNama">-</span>
+          </div>
+          <div class="row mb-3">
+              <div class="col-6">
+                  <small class="text-muted fw-bold d-block mb-1">Tanggal</small>
+                  <span class="fw-medium text-dark bg-light px-2 py-1 rounded" id="detailAdminTanggal">-</span>
+              </div>
+              <div class="col-6">
+                  <small class="text-muted fw-bold d-block mb-1">Jenis Izin</small>
+                  <span class="fw-medium text-dark bg-light px-2 py-1 rounded" id="detailAdminJenis">-</span>
+              </div>
+          </div>
+          <div class="mb-4">
+              <small class="text-muted fw-bold d-block mb-2">Alasan / Keterangan</small>
+              <p class="fw-medium text-dark mb-0 bg-light p-3 rounded-4 border" id="detailAdminKeterangan">-</p>
+          </div>
+          <div class="mb-4 text-center d-none" id="detailAdminBuktiContainer">
+              <button type="button" id="detailAdminBtnBukti" class="btn btn-outline-primary rounded-pill w-100 fw-bold py-2"><i class="bi bi-image me-2"></i>Lihat Surat/Bukti Dokter</button>
+          </div>
+          <div class="d-flex gap-2" id="detailAdminAksiContainer">
+              <!-- Approve / Reject buttons akan dirender di sini via JS -->
+          </div>
         </div>
       </div>
     </div>
@@ -1143,6 +1196,7 @@
             if(document.getElementById('pageManajemen').classList.contains('active')) renderTabelKaryawan();
             if(document.getElementById('pageNotifikasi').classList.contains('active')) renderNotifikasi();
             if(document.getElementById('pageKalender').classList.contains('active')) renderCalendar();
+            if(document.getElementById('pageIzin').classList.contains('active')) renderRiwayatIzinUser();
         } catch(err) {
             console.warn("Sinkronisasi ditunda: " + err.message);
         }
@@ -1243,6 +1297,7 @@
 
           if (pageId === 'pageProfil') setupProfilUI();
           if (pageId === 'pageNotifikasi') renderNotifikasi();
+          if (pageId === 'pageIzin') renderRiwayatIzinUser();
 
           if(pageId !== 'pageAbsen') {
               stopCamera();
@@ -1303,6 +1358,27 @@
       const isPrivileged = data.role === 'SuperAdmin' || data.role === 'Admin';
       document.getElementById('navManajemen').classList.toggle('d-none', !isPrivileged);
       document.getElementById('navAdminAbsensi').classList.toggle('d-none', !isPrivileged);
+
+      // Sembunyikan Menu Izin HANYA untuk SuperAdmin
+      const navLinkIzinDesktop = document.getElementById('navDesktopIzin');
+      const navLinkIzinMobile = document.getElementById('nav-btn-pageIzin');
+      if (data.role === 'SuperAdmin') {
+          if(navLinkIzinDesktop) navLinkIzinDesktop.classList.add('d-none');
+          if(navLinkIzinMobile) navLinkIzinMobile.classList.add('d-none');
+      } else {
+          if(navLinkIzinDesktop) navLinkIzinDesktop.classList.remove('d-none');
+          if(navLinkIzinMobile) navLinkIzinMobile.classList.remove('d-none');
+      }
+
+      // Sembunyikan Tab Approval Izin di menu "Data Tim" untuk Admin (Hanya SuperAdmin yang bisa)
+      const tabApproval = document.getElementById('tab-approval');
+      if (tabApproval) {
+          if (data.role === 'SuperAdmin') {
+              tabApproval.parentElement.classList.remove('d-none');
+          } else {
+              tabApproval.parentElement.classList.add('d-none');
+          }
+      }
 
       simpanSesi();
 
@@ -1406,8 +1482,8 @@
             const iconStr = isIzin ? '<i class="bi bi-envelope-paper-fill"></i>' : (a.tipe === 'Masuk' ? '<i class="bi bi-box-arrow-in-right"></i>' : '<i class="bi bi-box-arrow-left"></i>');
             let titleStr = isIzin ? `Pengajuan Izin` : `Absen ${a.tipe}`;
             if(isIzin) {
-               const stIzin = a.statusIzin.split(" - ")[0]; // Get 'Sakit' / 'Cuti' part
-               const appStatus = a.statusIzin.split(" - ").length > 1 ? a.statusIzin : "Pending";
+               const stIzin = a.keterangan.split(" - ")[0]; // Get 'Sakit' / 'Cuti' part from keterangan
+               const appStatus = a.statusIzin === 'Pending' || a.statusIzin === 'Disetujui' || a.statusIzin === 'Ditolak' ? a.statusIzin : "Pending";
                titleStr = `Izin ${stIzin} (${appStatus})`;
             }
 
@@ -1462,10 +1538,9 @@
                 if (masuk) dayNotifsHTML += buatKartuNotif('bi-box-arrow-in-right', 'text-success', 'bg-success', 'Absen Masuk Berhasil', `Sistem telah mencatat kehadiran masuk Anda.`, masuk.waktu + ' WIB');
                 if (pulang) dayNotifsHTML += buatKartuNotif('bi-box-arrow-left', 'text-danger', 'bg-danger', 'Absen Pulang Berhasil', `Kerja bagus hari ini! Waktu pulang telah tercatat.`, pulang.waktu + ' WIB');
                 if (izin) {
-                   const splitSt = izin.statusIzin.split(" - ");
-                   const statusName = splitSt.length > 1 ? splitSt[0] : izin.statusIzin;
-                   const stApproval = splitSt.length > 1 ? splitSt[1] : "Pending";
-                   dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', 'text-primary', 'bg-primary', `Pengajuan Izin: ${statusName}`, `Status: ${stApproval}. Ket: ${izin.keterangan}`, 'Info Izin');
+                   const statusName = izin.keterangan.split(" - ")[0];
+                   const stApproval = izin.statusIzin === 'Pending' || izin.statusIzin === 'Disetujui' || izin.statusIzin === 'Ditolak' ? izin.statusIzin : "Pending";
+                   dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', 'text-primary', 'bg-primary', `Pengajuan Izin: ${statusName}`, `Status: ${stApproval}. Ket: ${izin.keterangan.split(" - ")[1]}`, 'Info Izin');
                 }
             } else { 
                 const masuk = records.find(a => a.tipe === 'Masuk');
@@ -1478,8 +1553,7 @@
                 } else {
                     if (masuk) dayNotifsHTML += buatKartuNotif('bi-check-circle-fill', 'text-success', 'bg-success', 'Kehadiran Tercatat', `Anda telah absen masuk pada ${masuk.waktu} WIB.`, 'Selesai');
                     if (izin) {
-                       const splitSt = izin.statusIzin.split(" - ");
-                       const stApproval = splitSt.length > 1 ? splitSt[1] : "Pending";
+                       const stApproval = izin.statusIzin === 'Pending' || izin.statusIzin === 'Disetujui' || izin.statusIzin === 'Ditolak' ? izin.statusIzin : "Pending";
                        let color = stApproval === 'Disetujui' ? 'bg-success' : (stApproval === 'Ditolak' ? 'bg-danger' : 'bg-primary');
                        let textCol = color.replace('bg-', 'text-');
                        dayNotifsHTML += buatKartuNotif('bi-envelope-paper-fill', textCol, color, `Izin/Cuti`, `Status pengajuan: ${stApproval}.`, 'Selesai');
@@ -1599,11 +1673,46 @@
           document.getElementById('formPengajuanIzin').reset(); toggleSuratDokter();
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif(`Pengajuan ${jenis} berhasil dikirim dan menunggu persetujuan.`, "success");
-          switchPage('pageDashboard');
+          renderRiwayatIzinUser(); // Refresh history setelah submit
       } catch (err) {
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal: " + err.message, "danger");
       }
+    }
+
+    function renderRiwayatIzinUser() {
+        const container = document.getElementById('listIzinUser');
+        container.innerHTML = '';
+        const myIzin = DB_ABSENSI.filter(a => a.idKaryawan === currentUser.id && a.tipe === 'Izin').reverse();
+
+        if (myIzin.length === 0) {
+            container.innerHTML = '<div class="text-center text-muted small py-4 bg-light rounded-4 border"><i class="bi bi-inbox fs-3 d-block mb-2"></i> Belum ada riwayat pengajuan izin.</div>';
+            return;
+        }
+
+        myIzin.forEach(izin => {
+            let ketParts = izin.keterangan.split(" - ");
+            let tipeIzin = ketParts[0];
+            let alasan = ketParts.length > 1 ? ketParts[1] : "-";
+            
+            let stApproval = (izin.statusIzin === 'Pending' || izin.statusIzin === 'Disetujui' || izin.statusIzin === 'Ditolak') ? izin.statusIzin : "Pending";
+            
+            let badgeClass = 'bg-warning text-dark';
+            let icon = 'bi-hourglass-split';
+            if (stApproval === 'Disetujui') { badgeClass = 'bg-success text-white'; icon = 'bi-check-circle-fill'; }
+            else if (stApproval === 'Ditolak') { badgeClass = 'bg-danger text-white'; icon = 'bi-x-circle-fill'; }
+
+            container.innerHTML += `
+                <div class="p-3 border rounded-4 bg-white shadow-sm position-relative">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bolder text-dark" style="font-size:0.95rem;"><i class="bi bi-calendar-event text-primary me-2"></i>${formatTanggalIndo(izin.tanggal)}</span>
+                        <span class="badge ${badgeClass} rounded-pill px-3 py-2 shadow-sm"><i class="bi ${icon} me-1"></i>${stApproval}</span>
+                    </div>
+                    <div class="small text-muted mb-1"><span class="fw-bold text-dark me-1">Jenis:</span> <span class="bg-light px-2 py-1 rounded">${tipeIzin}</span></div>
+                    <div class="small text-muted"><span class="fw-bold text-dark me-1">Alasan:</span> ${alasan}</div>
+                </div>
+            `;
+        });
     }
 
     function bukaKalender() { switchPage('pageKalender'); renderCalendar(); }
@@ -1689,7 +1798,8 @@
          const dIzin = DB_ABSENSI.find(a => a.idKaryawan === currentUser.id && a.tanggal === tgl && a.tipe === 'Izin');
          let splitSt = dIzin ? dIzin.keterangan.split(" - ") : ["-","-"];
          
-         document.getElementById('detailJenisIzin').innerText = dIzin ? `${splitSt[0]} (${dIzin.statusIzin})` : "-";
+         const appStatus = dIzin && (dIzin.statusIzin === 'Pending' || dIzin.statusIzin === 'Disetujui' || dIzin.statusIzin === 'Ditolak') ? dIzin.statusIzin : "Pending";
+         document.getElementById('detailJenisIzin').innerText = dIzin ? `${splitSt[0]} (${appStatus})` : "-";
          document.getElementById('detailKeteranganIzin').innerText = dIzin ? splitSt[1] : "-";
          
          const cBukti = document.getElementById('detailContainerBukti');
@@ -2189,7 +2299,7 @@
       
       tbody.innerHTML = '';
       if(izinData.length === 0) {
-         tbody.innerHTML = `<tr><td colspan="5" class="py-5 text-muted">Belum ada data pengajuan Izin/Cuti.</td></tr>`;
+         tbody.innerHTML = `<tr><td colspan="4" class="py-5 text-muted">Belum ada data pengajuan Izin/Cuti.</td></tr>`;
          return;
       }
 
@@ -2197,43 +2307,71 @@
          let infoUser = DB_USERS.find(u => u.id === a.idKaryawan);
          let namaUser = infoUser ? infoUser.nama : a.nama;
          
-         let buktiBtn = (a.bukti && a.bukti !== "-") ? `<button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="bukaModalFoto('${a.bukti}')"><i class="bi bi-image me-1"></i> Lihat</button>` : `<span class="text-muted small">-</span>`;
-         
          let st = a.statusIzin;
-         let badgeStatus = '<span class="badge bg-warning text-dark px-3 py-1 rounded-pill">Pending</span>';
-         let actionBtns = `
-           <button class="btn btn-sm btn-success rounded-circle me-1" title="Setujui" onclick="eksekusiApprovalIzin('${a.idKaryawan}', '${a.tanggal}', 'Disetujui')"><i class="bi bi-check-lg"></i></button>
-           <button class="btn btn-sm btn-danger rounded-circle" title="Tolak" onclick="eksekusiApprovalIzin('${a.idKaryawan}', '${a.tanggal}', 'Ditolak')"><i class="bi bi-x-lg"></i></button>
-         `;
+         let stApproval = (st === 'Pending' || st === 'Disetujui' || st === 'Ditolak') ? st : "Pending";
+         
+         let badgeStatus = '<span class="badge bg-warning text-dark px-3 py-1 rounded-pill shadow-sm">Pending</span>';
+         if(stApproval === 'Disetujui') badgeStatus = '<span class="badge bg-success px-3 py-1 rounded-pill shadow-sm">Disetujui</span>';
+         else if(stApproval === 'Ditolak') badgeStatus = '<span class="badge bg-danger px-3 py-1 rounded-pill shadow-sm">Ditolak</span>';
 
-         if(st === 'Disetujui') {
-            badgeStatus = '<span class="badge bg-success px-3 py-1 rounded-pill">Disetujui</span>';
-            actionBtns = `<span class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Done</span>`;
-         } else if(st === 'Ditolak') {
-            badgeStatus = '<span class="badge bg-danger px-3 py-1 rounded-pill">Ditolak</span>';
-            actionBtns = `<span class="text-danger small fw-bold"><i class="bi bi-x-circle-fill"></i> Done</span>`;
-         }
+         let actionBtns = `<button class="btn btn-sm btn-primary rounded-circle shadow-sm" title="Lihat Detail" onclick="bukaDetailIzinAdmin('${a.idKaryawan}', '${a.tanggal}')"><i class="bi bi-eye-fill"></i></button>`;
 
          let ketParts = a.keterangan.split(" - ");
          let tipeIzin = ketParts[0];
-         let alasan = ketParts.length > 1 ? ketParts[1] : "-";
 
          tbody.innerHTML += `
             <tr>
-               <td class="text-start">
+               <td class="text-start ps-4">
                   <span class="fw-bold d-block text-dark">${namaUser}</span>
                   <small class="text-muted">${formatTanggalIndo(a.tanggal)}</small>
                </td>
                <td>
                   <span class="d-block fw-bold">${tipeIzin}</span>
-                  <small class="text-muted d-block text-truncate" style="max-width:150px;" title="${alasan}">${alasan}</small>
                </td>
-               <td>${buktiBtn}</td>
                <td>${badgeStatus}</td>
                <td>${actionBtns}</td>
             </tr>
          `;
       });
+    }
+
+    let modalDetailIzinAdminObj = null;
+    function bukaDetailIzinAdmin(idKar, tgl) {
+        const izin = DB_ABSENSI.find(a => a.idKaryawan === idKar && a.tanggal === tgl && a.tipe === 'Izin');
+        if(!izin) return;
+        const infoUser = DB_USERS.find(u => u.id === idKar);
+        
+        document.getElementById('detailAdminNama').innerText = infoUser ? infoUser.nama : izin.nama;
+        document.getElementById('detailAdminTanggal').innerText = formatTanggalIndo(izin.tanggal);
+        
+        let ketParts = izin.keterangan.split(" - ");
+        document.getElementById('detailAdminJenis').innerText = ketParts[0];
+        document.getElementById('detailAdminKeterangan').innerText = ketParts.length > 1 ? ketParts[1] : "-";
+        
+        const buktiContainer = document.getElementById('detailAdminBuktiContainer');
+        if (izin.bukti && izin.bukti !== "-") {
+            buktiContainer.classList.remove('d-none');
+            document.getElementById('detailAdminBtnBukti').onclick = () => bukaModalFoto(izin.bukti);
+        } else {
+            buktiContainer.classList.add('d-none');
+        }
+        
+        const aksiContainer = document.getElementById('detailAdminAksiContainer');
+        let stApproval = (izin.statusIzin === 'Pending' || izin.statusIzin === 'Disetujui' || izin.statusIzin === 'Ditolak') ? izin.statusIzin : "Pending";
+        
+        if (stApproval === 'Pending') {
+            aksiContainer.innerHTML = `
+                <button class="btn btn-light text-danger border rounded-pill fw-bold flex-grow-1 shadow-sm py-2" onclick="eksekusiApprovalIzin('${idKar}', '${tgl}', 'Ditolak')"><i class="bi bi-x-lg me-1"></i> Tolak</button>
+                <button class="btn btn-primary-modern rounded-pill fw-bold flex-grow-1 shadow-sm py-2" onclick="eksekusiApprovalIzin('${idKar}', '${tgl}', 'Disetujui')"><i class="bi bi-check-lg me-1"></i> Setujui</button>
+            `;
+        } else {
+            let badgeClass = stApproval === 'Disetujui' ? 'text-success' : 'text-danger';
+            let iconClass = stApproval === 'Disetujui' ? 'bi-check-circle-fill' : 'bi-x-circle-fill';
+            aksiContainer.innerHTML = `<div class="w-100 text-center fw-bold ${badgeClass} bg-light py-3 rounded-pill border"><i class="bi ${iconClass} me-1"></i> Pengajuan Telah ${stApproval}</div>`;
+        }
+        
+        if(!modalDetailIzinAdminObj) modalDetailIzinAdminObj = new bootstrap.Modal(document.getElementById('modalDetailIzinAdmin'));
+        modalDetailIzinAdminObj.show();
     }
 
     async function eksekusiApprovalIzin(idKar, tgl, statusBaru) {
@@ -2247,6 +2385,7 @@
           await sinkronisasiDataServer(); 
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif(`Pengajuan berhasil ${statusBaru}.`, "success");
+          if(modalDetailIzinAdminObj) modalDetailIzinAdminObj.hide();
        } catch(err) {
           document.getElementById('loadingSpinner').style.display = 'none';
           alertNotif("Gagal: " + err.message, "danger");
