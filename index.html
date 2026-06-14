@@ -17,18 +17,18 @@
 
   <style>
     :root {
-      var(--primary): #55A630;
-      var(--primary-hover): #38b000;
-      var(--primary-light): #E8F5E9;
-      var(--bg-main): #F4F9F4;
-      var(--surface): #FFFFFF;
-      var(--text-main): #1F2937;
-      var(--text-muted): #738A73;
-      var(--border-color): #E2E8F0;
-      var(--radius-lg): 30px;
-      var(--radius-md): 20px;
-      var(--shadow-sm): 0 4px 15px rgba(0,0,0,0.03);
-      var(--shadow-md): 0 10px 30px rgba(85, 166, 48, 0.1);
+      --primary: #55A630;
+      --primary-hover: #38b000;
+      --primary-light: #E8F5E9;
+      --bg-main: #F4F9F4;
+      --surface: #FFFFFF;
+      --text-main: #1F2937;
+      --text-muted: #738A73;
+      --border-color: #E2E8F0;
+      --radius-lg: 30px;
+      --radius-md: 20px;
+      --shadow-sm: 0 4px 15px rgba(0,0,0,0.03);
+      --shadow-md: 0 10px 30px rgba(85, 166, 48, 0.1);
     }
 
     body { 
@@ -468,14 +468,20 @@
               </div>
               <div>
                 <h5 class="mb-0 fw-bolder">Form Pengajuan Izin</h5>
-                <p class="text-muted small mb-0">Lengkapi data untuk mengajukan absen.</p>
+                <p class="text-muted small mb-0">Lengkapi data untuk mengajukan cuti/izin.</p>
               </div>
             </div>
 
             <form id="formPengajuanIzin" onsubmit="return false;">
-              <div class="mb-3">
-                <label class="form-label small fw-bold text-muted ms-1">Tanggal Izin</label>
-                <input type="date" id="inputTglIzin" class="form-control" required>
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label small fw-bold text-muted ms-1">Mulai Tanggal</label>
+                  <input type="date" id="inputTglIzinMulai" class="form-control" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small fw-bold text-muted ms-1">Sampai Tanggal</label>
+                  <input type="date" id="inputTglIzinSampai" class="form-control" required>
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label small fw-bold text-muted ms-1">Jenis Izin</label>
@@ -1543,12 +1549,25 @@
     });
 
     async function simpanIzin() {
-      const tgl = document.getElementById('inputTglIzin').value;
+      const tglMulai = document.getElementById('inputTglIzinMulai').value;
+      const tglSampai = document.getElementById('inputTglIzinSampai').value;
       const jenis = document.getElementById('inputJenisIzin').value;
       const ket = document.getElementById('inputKetIzin').value.trim();
       const fileSurat = document.getElementById('inputSuratDokter').files[0];
       
-      if(!tgl || !jenis || !ket) { alertNotif("Lengkapi form izin terlebih dahulu.", "warning"); return; }
+      if(!tglMulai || !tglSampai || !jenis || !ket) { alertNotif("Lengkapi form izin terlebih dahulu.", "warning"); return; }
+      
+      if(new Date(tglSampai) < new Date(tglMulai)) { alertNotif("Tanggal sampai tidak boleh sebelum tanggal mulai.", "warning"); return; }
+
+      // Men-generate array tanggal untuk direkam di database
+      let tglArray = [];
+      let currentDate = new Date(tglMulai);
+      const endDate = new Date(tglSampai);
+      while(currentDate <= endDate) {
+          let dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,'0')}-${String(currentDate.getDate()).padStart(2,'0')}`;
+          tglArray.push(dateStr);
+          currentDate.setDate(currentDate.getDate() + 1);
+      }
       
       document.getElementById('loadingText').innerText = "Menyimpan Izin...";
       document.getElementById('loadingSpinner').style.display = 'flex';
@@ -1563,10 +1582,15 @@
          }
       }
 
+      // Payload mengirimkan tanggalArray untuk diproses GAS 
       const payload = {
-          idKaryawan: currentUser.id, nama: currentUser.nama, tanggal: tgl,  
-          tipe: "Izin", keterangan: jenis + " - " + ket,
-          fotoBase64: buktiDataUrl, koordinat: "-"
+          idKaryawan: currentUser.id, 
+          nama: currentUser.nama, 
+          tanggalArray: tglArray,  
+          tipe: "Izin", 
+          keterangan: jenis + " - " + ket,
+          fotoBase64: buktiDataUrl, 
+          koordinat: "-"
       };
 
       try {
