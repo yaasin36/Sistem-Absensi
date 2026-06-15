@@ -17,24 +17,25 @@
 
   <style>
     :root {
-      --primary: #55A630;
-      --primary-hover: #38b000;
-      --primary-light: #E8F5E9;
-      --bg-main: #F4F9F4;
+      /* Tema Biru Baru */
+      --primary: #0d6efd;
+      --primary-hover: #0b5ed7;
+      --primary-light: #eff6ff;
+      --bg-main: #f8fafc;
       --surface: #FFFFFF;
       --text-main: #1F2937;
-      --text-muted: #738A73;
+      --text-muted: #64748b;
       --border-color: #E2E8F0;
       --radius-lg: 30px;
       --radius-md: 20px;
       --shadow-sm: 0 4px 15px rgba(0,0,0,0.03);
-      --shadow-md: 0 10px 30px rgba(85, 166, 48, 0.1);
+      --shadow-md: 0 10px 30px rgba(13, 110, 253, 0.1);
     }
 
     body { 
-      background-color: #F4F9F4;
+      background-color: var(--bg-main);
       font-family: 'Plus Jakarta Sans', sans-serif; 
-      color: #1F2937; 
+      color: var(--text-main); 
       min-height: 100vh;
       overflow-x: hidden;
       padding-bottom: 110px;
@@ -56,9 +57,9 @@
       padding: 15px 0; 
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
-    .navbar-custom .navbar-brand { color: #55A630 !important; font-weight: 800; font-size: 1.5rem; letter-spacing: 0.5px;}
-    .navbar-custom .nav-link { color: #738A73 !important; font-weight: 600; font-size: 0.95rem; margin: 0 5px; border-radius: 8px; transition: all 0.2s; cursor: pointer;}
-    .navbar-custom .nav-link:hover, .navbar-custom .nav-link.active { background: #E8F5E9; color: #55A630 !important; }
+    .navbar-custom .navbar-brand { color: var(--primary) !important; font-weight: 800; font-size: 1.5rem; letter-spacing: 0.5px;}
+    .navbar-custom .nav-link { color: var(--text-muted) !important; font-weight: 600; font-size: 0.95rem; margin: 0 5px; border-radius: 8px; transition: all 0.2s; cursor: pointer;}
+    .navbar-custom .nav-link:hover, .navbar-custom .nav-link.active { background: var(--primary-light); color: var(--primary) !important; }
     
     .modern-card { 
       background: #FFFFFF; 
@@ -71,21 +72,21 @@
     .form-control, .form-select { 
       border-radius: 14px; 
       padding: 14px 18px; 
-      border: 1px solid #E2E8F0; 
+      border: 1px solid var(--border-color); 
       background-color: #FFFFFF !important; 
-      color: #1F2937 !important;
+      color: var(--text-main) !important;
       font-size: 0.95rem; 
       font-weight: 500;
       box-shadow: none !important;
     }
     .form-control::placeholder { color: #A0AEC0; }
     .form-control:focus, .form-select:focus { 
-      border-color: #55A630; 
-      box-shadow: 0 0 0 4px rgba(85, 166, 48, 0.15) !important; 
+      border-color: var(--primary); 
+      box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15) !important; 
     }
 
     .btn-primary-modern { 
-      background-color: #55A630; 
+      background-color: var(--primary); 
       border: none;
       border-radius: 16px; 
       color: white; 
@@ -94,17 +95,17 @@
       transition: all 0.2s ease; 
     }
     .btn-primary-modern:hover { 
-      background-color: #38b000; 
+      background-color: var(--primary-hover); 
       transform: translateY(-2px); 
-      box-shadow: 0 8px 20px rgba(85, 166, 48, 0.3); 
+      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3); 
       color: white; 
     }
 
-    .hero-green-card {
-      background: linear-gradient(135deg, #6BB736, #4A9322);
+    .hero-main-card {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       border-radius: 30px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(85, 166, 48, 0.1);
+      box-shadow: 0 10px 30px rgba(13, 110, 253, 0.15);
       color: white;
     }
     .hero-calendar-glass {
@@ -123,7 +124,7 @@
     }
     .week-day.active-day {
       background: #ffffff;
-      color: #55A630;
+      color: var(--primary);
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       transform: scale(1.05);
     }
@@ -137,12 +138,12 @@
     .scroll-x::-webkit-scrollbar { display: none; }
 
     .pill-tab {
-      background: #FFFFFF; border: 1px solid #E2E8F0;
-      color: #738A73; border-radius: 50px;
+      background: #FFFFFF; border: 1px solid var(--border-color);
+      color: var(--text-muted); border-radius: 50px;
       padding: 8px 20px; font-weight: 700; font-size: 0.85rem;
       white-space: nowrap; cursor: pointer; transition: all 0.2s;
     }
-    .pill-tab.active { background: #55A630; color: white; border-color: #55A630; box-shadow: 0 4px 10px rgba(85, 166, 48, 0.3);}
+    .pill-tab.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);}
 
     .activity-card-new {
       background: #FFFFFF; border-radius: 20px;
@@ -153,7 +154,7 @@
     .activity-card-new:hover { transform: translateY(-3px); }
     .act-avatar {
       width: 55px; height: 55px; border-radius: 18px;
-      background: #E8F5E9; color: #55A630;
+      background: var(--primary-light); color: var(--primary);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.5rem; font-weight: bold; margin-right: 15px; flex-shrink:0;
       overflow: hidden;
@@ -161,7 +162,7 @@
     .act-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .act-arrow {
       width: 36px; height: 36px; border-radius: 50%;
-      background: #E8F5E9; color: #55A630;
+      background: var(--primary-light); color: var(--primary);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.1rem; flex-shrink: 0;
     }
@@ -169,7 +170,7 @@
     .notif-item {
         background: #FFFFFF; border-radius: 16px; padding: 16px;
         display: flex; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        border: 1px solid #E2E8F0; margin-bottom: 12px;
+        border: 1px solid var(--border-color); margin-bottom: 12px;
         align-items: flex-start;
     }
     .notif-icon {
@@ -202,18 +203,18 @@
       flex-shrink: 0;
       cursor: pointer; transition: all 0.2s;
     }
-    .bottom-nav-item.active { color: #55A630; }
+    .bottom-nav-item.active { color: var(--primary); }
     .bottom-nav-item i { font-size: 1.5rem; margin-bottom: 2px; }
 
     .fab-center {
       position: absolute; top: -35px; left: 50%; transform: translateX(-50%);
       width: 75px; height: 75px;
-      background: linear-gradient(135deg, #74C640, #4A9322);
+      background: linear-gradient(135deg, #60a5fa, #2563eb);
       border-radius: 50%;
-      border: 8px solid #F4F9F4;
+      border: 8px solid var(--bg-main);
       display: flex; align-items: center; justify-content: center;
       color: white; font-size: 2.2rem;
-      box-shadow: 0 10px 25px rgba(85, 166, 48, 0.4);
+      box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4);
       cursor: pointer; z-index: 1001; transition: transform 0.2s;
     }
     .fab-center:active { transform: translateX(-50%) scale(0.95); }
@@ -221,7 +222,7 @@
     #cameraContainer { 
       width: 100%; max-width: 640px; margin: 0 auto; 
       border-radius: 24px; overflow: hidden; 
-      background: #000; box-shadow: 0 10px 30px rgba(85, 166, 48, 0.1); 
+      background: #000; box-shadow: 0 10px 30px rgba(13, 110, 253, 0.1); 
       position: relative; border: 4px solid #FFFFFF;
     }
     
@@ -235,33 +236,33 @@
     
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
     @media (max-width: 576px) { .calendar-grid { gap: 5px; } }
-    .calendar-day-header { text-align: center; font-size: 0.85rem; font-weight: 700; color: #738A73; padding-bottom: 5px;}
+    .calendar-day-header { text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); padding-bottom: 5px;}
     .calendar-day { 
-      aspect-ratio: 1; border-radius: 14px; background: #F3F6F3; 
+      aspect-ratio: 1; border-radius: 14px; background: #f1f5f9; 
       display: flex; flex-direction: column; align-items: center; justify-content: center; 
       transition: all 0.2s; border: 1px solid transparent; cursor: pointer;
       position: relative;
     }
-    .calendar-day:hover { background: #E8F5E9; border-color: #C8E6C9; }
+    .calendar-day:hover { background: var(--primary-light); border-color: #bfdbfe; }
     .calendar-day.empty { background: transparent; border: none; cursor: default;}
     .calendar-date { font-weight: 800; font-size: 1.1rem; margin-bottom: 2px;}
     
     .status-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-    .status-full { background: #55A630; } 
+    .status-full { background: var(--primary); } 
     .status-partial { background: #F59E0B; } 
     .status-absent { background: #EF4444; } 
     .status-leave { background: #3b82f6; } 
 
-    .modal-content.light-modal { background: #FFFFFF; border: none; border-radius: 30px; box-shadow: 0 10px 30px rgba(85, 166, 48, 0.1); }
+    .modal-content.light-modal { background: #FFFFFF; border: none; border-radius: 30px; box-shadow: 0 10px 30px rgba(13, 110, 253, 0.1); }
     .modal-header { border-bottom: 1px solid rgba(0,0,0,0.05); }
     .modal-footer { border-top: 1px solid rgba(0,0,0,0.05); }
 
     .profile-header-card {
-        background: linear-gradient(180deg, #d4edda 0%, #ffffff 100%);
+        background: linear-gradient(180deg, #dbeafe 0%, #ffffff 100%);
         border-radius: 30px;
         padding: 30px 20px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border: 1px solid rgba(85, 166, 48, 0.1);
+        border: 1px solid rgba(13, 110, 253, 0.1);
     }
     .profile-menu-item {
         background: #FFFFFF;
@@ -273,12 +274,12 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         cursor: pointer;
         transition: all 0.2s;
-        border: 1px solid #E2E8F0;
+        border: 1px solid var(--border-color);
     }
     .profile-menu-item:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        border-color: rgba(85, 166, 48, 0.3);
+        border-color: rgba(13, 110, 253, 0.3);
     }
     
     @media (min-width: 992px) {
@@ -295,7 +296,7 @@
 <body>
 
   <div id="loadingSpinner" class="spinner-overlay">
-    <div class="spinner-border" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.35rem; color: #55A630 !important;">
+    <div class="spinner-border" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.35rem; color: #0d6efd !important;">
       <span class="visually-hidden">Loading...</span>
     </div>
     <div class="mt-3 fw-bold fs-6" style="color: #1F2937;" id="loadingText">Memproses...</div>
@@ -309,8 +310,9 @@
 
   <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-custom fixed-top d-none">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="javascript:void(0)">
-        <i class="bi bi-hexagon-fill me-2"></i> SPACE
+      <a class="navbar-brand d-flex align-items-center gap-2" href="javascript:void(0)">
+        <img src="asset/image/GKS.png" alt="Logo GKS" style="height: 30px; object-fit: contain;">
+        <span>GKS</span>
       </a>
       <div class="collapse navbar-collapse" id="navbarNavDesktop">
         <ul class="navbar-nav mx-auto gap-1">
@@ -373,10 +375,8 @@
       <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="col-md-6 col-lg-5 col-xl-4">
           <div class="text-center mb-4">
-            <div style="width: 80px; height: 80px; background: #E8F5E9; color: #55A630; border-radius: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-              <i class="bi bi-hexagon-fill"></i>
-            </div>
-            <h2 class="fw-bolder text-dark mb-1">SPACE</h2>
+            <img src="asset/image/GKS.png" alt="Logo GKS" style="height: 80px; margin-bottom: 15px; object-fit: contain;">
+            <h2 class="fw-bolder text-dark mb-1">GKS</h2>
             <p class="text-muted fw-medium">Sistem Presensi Digital</p>
           </div>
 
@@ -412,7 +412,7 @@
                <div class="fw-bolder fs-5 text-dark" id="dashNamaUser">Nama User</div>
              </div>
           </div>
-          <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: #738A73; cursor: pointer; position: relative;" onclick="bukaNotifikasi()">
+          <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: var(--text-muted); cursor: pointer; position: relative;" onclick="bukaNotifikasi()">
             <i class="bi bi-bell-fill fs-5"></i>
             <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" id="notifBadge" style="display: none;"></span>
           </div>
@@ -420,12 +420,12 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
            <h6 class="fw-bolder mb-0 fs-5 text-dark">Status Kehadiran</h6>
-           <a href="javascript:void(0)" class="text-decoration-none small fw-bold" style="color: #55A630;" onclick="bukaKalender()">Lihat Semua</a>
+           <a href="javascript:void(0)" class="text-decoration-none small fw-bold" style="color: var(--primary);" onclick="bukaKalender()">Lihat Semua</a>
         </div>
-        <div class="hero-green-card position-relative mb-4">
+        <div class="hero-main-card position-relative mb-4">
            <div class="p-4 pt-4 pb-3 text-white">
               <div class="d-flex justify-content-between align-items-start mb-2">
-                 <div class="badge bg-white text-success rounded-pill px-3 py-1 fw-bold shadow-sm" style="color: #55A630 !important;">Hari Ini</div>
+                 <div class="badge bg-white rounded-pill px-3 py-1 fw-bold shadow-sm" style="color: var(--primary) !important;">Hari Ini</div>
                  <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width:30px; height:30px;"><i class="bi bi-clock-fill"></i></div>
               </div>
               <h3 class="fw-bolder mb-1" id="dashJamRealtime">00:00:00 WIB</h3>
@@ -529,7 +529,7 @@
               </button>
             </form>
             
-            <hr class="my-5" style="border-color: #E2E8F0;">
+            <hr class="my-5" style="border-color: var(--border-color);">
             <div class="d-flex align-items-center mb-4">
               <div class="act-avatar m-0 me-3 shadow-sm bg-light border text-primary">
                 <i class="bi bi-clock-history"></i>
@@ -589,7 +589,7 @@
 
             <div class="row g-3">
               <div class="col-6">
-                <button onclick="prosesAmbilAbsen('Masuk')" class="btn btn-clock w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: #E8F5E9; color: #55A630; border: 1px solid #55A630; border-radius:16px;">
+                <button onclick="prosesAmbilAbsen('Masuk')" class="btn btn-clock w-100 py-3 d-flex flex-column align-items-center justify-content-center" style="background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); border-radius:16px;">
                   <i class="bi bi-box-arrow-in-right fs-3 mb-1"></i> <span class="fw-bolder">MASUK</span>
                 </button>
               </div>
@@ -1016,12 +1016,12 @@
           </div>
 
           <div id="detailContainerIzin" class="d-none">
-            <div class="absen-card mb-0 shadow-sm border border-primary border-opacity-25 rounded-4 p-3 mt-3" style="background: #E8F5E9;">
+            <div class="absen-card mb-0 shadow-sm border border-primary border-opacity-25 rounded-4 p-3 mt-3" style="background: var(--primary-light);">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="fw-bold text-primary small"><i class="bi bi-envelope-paper me-1"></i> JENIS IZIN</span>
                 <span class="fw-bold fs-5 text-primary" id="detailJenisIzin">-</span>
               </div>
-              <hr style="border-color: rgba(85, 166, 48, 0.2);">
+              <hr style="border-color: rgba(13, 110, 253, 0.2);">
               <p class="mb-0 text-muted small fw-bold">Alasan:</p>
               <p class="fw-medium text-dark mb-0 mt-1" id="detailKeteranganIzin">-</p>
               
@@ -1400,7 +1400,7 @@
       const icon = document.getElementById('globalNotifIcon');
       const text = document.getElementById('globalNotifText');
 
-      if(type === 'success') { content.style.background = 'rgba(85, 166, 48, 0.95)'; icon.className = 'bi bi-check-circle-fill me-2 fs-5'; }
+      if(type === 'success') { content.style.background = 'rgba(25, 135, 84, 0.95)'; icon.className = 'bi bi-check-circle-fill me-2 fs-5'; }
       else if(type === 'warning') { content.style.background = 'rgba(245, 158, 11, 0.95)'; icon.className = 'bi bi-exclamation-triangle-fill me-2 fs-5'; }
       else if(type === 'danger') { content.style.background = 'rgba(239, 68, 68, 0.95)'; icon.className = 'bi bi-x-circle-fill me-2 fs-5'; }
       else { content.style.background = 'rgba(0, 0, 0, 0.85)'; icon.className = 'bi bi-info-circle-fill me-2 fs-5'; }
@@ -2302,7 +2302,7 @@
                 ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
                 
                 resizedDetections.forEach(det => {
-                    ctx.strokeStyle = '#55A630'; ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#0d6efd'; ctx.lineWidth = 3;
                     ctx.strokeRect(det.box.x, det.box.y, det.box.width, det.box.height);
                 });
                 
@@ -2530,7 +2530,7 @@
       ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; ctx.fillRect(0, canvasElement.height - 90, canvasElement.width, 90);
       ctx.font = "bold 15px 'Plus Jakarta Sans', sans-serif"; ctx.fillStyle = "#ffffff";
       ctx.fillText(`PT. GARUDA KARYA SOLUTION`, 15, canvasElement.height - 65);
-      ctx.font = "13px sans-serif"; ctx.fillStyle = "#55A630"; 
+      ctx.font = "13px sans-serif"; ctx.fillStyle = "#0d6efd"; 
       ctx.fillText(`👤 ${currentUser.nama}`, 15, canvasElement.height - 43);
       ctx.fillText(`🕒 ${strTanggal} ${strWaktu} WIB`, 15, canvasElement.height - 25);
       ctx.fillText(`📍 ${koordinat}`, 15, canvasElement.height - 7);
