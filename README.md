@@ -1,6 +1,8 @@
 # SPACE - Sistem Presensi Digital (Face Detection & Geolocation)
 
-![SPACE App Banner](https://via.placeholder.com/1000x400.png?text=SPACE+-+Sistem+Presensi+Digital) **SPACE** adalah aplikasi absensi berbasis web (Single Page Application) yang dirancang khusus untuk PT Garuda Karya Solution. Dibangun dengan pendekatan *Mobile-First*, aplikasi ini mengintegrasikan teknologi **Face Detection** (menggunakan `face-api.js`), pelacakan **Geolocation**, dan penyimpanan *serverless* menggunakan **Google Apps Script (GAS)**.
+<!-- ![SPACE App Banner](https://via.placeholder.com/1000x400.png?text=SPACE+-+Sistem+Presensi+Digital)  -->
+
+**SPACE** adalah aplikasi absensi berbasis web (Single Page Application) yang dirancang khusus untuk PT Garuda Karya Solution. Dibangun dengan pendekatan *Mobile-First*, aplikasi ini mengintegrasikan teknologi **Face Detection** (menggunakan `face-api.js`), pelacakan **Geolocation**, dan penyimpanan *serverless* menggunakan **Google Apps Script (GAS)**.
 
 ---
 
