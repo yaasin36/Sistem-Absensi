@@ -2365,15 +2365,24 @@
       style="z-index: 1070"
     >
       <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content light-modal text-center rounded-4 shadow-lg border-0 overflow-hidden">
+        <div
+          class="modal-content light-modal text-center rounded-4 shadow-lg border-0 overflow-hidden"
+        >
           <div class="bg-warning bg-opacity-10 py-4">
-            <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-2" style="width: 70px; height: 70px; font-size: 2.5rem;">
-               <i class="bi bi-key-fill"></i>
+            <div
+              class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-2"
+              style="width: 70px; height: 70px; font-size: 2.5rem"
+            >
+              <i class="bi bi-key-fill"></i>
             </div>
             <h5 class="fw-bolder text-dark mb-0 mt-2">Reset Password?</h5>
           </div>
           <div class="modal-body py-4 px-4 bg-white">
-            <p class="text-muted small mb-4 lh-sm" id="konfirmResetMsg" style="font-size: 0.9rem;"></p>
+            <p
+              class="text-muted small mb-4 lh-sm"
+              id="konfirmResetMsg"
+              style="font-size: 0.9rem"
+            ></p>
             <div class="d-flex justify-content-center gap-2">
               <button
                 type="button"
@@ -2603,8 +2612,9 @@
       // ========================================================
       // KONFIGURASI APLIKASI
       // ========================================================
-      
-      const GAS_URL = "https://script.google.com/macros/s/AKfycbxsmLcSk7RrpPHxX02spJaHIqAlUG2UEU6xZYZCkDBaHUJW61Ew9WQRDJDofdwRRtA5EA/exec";
+
+      const GAS_URL =
+        "https://script.google.com/macros/s/AKfycbxsmLcSk7RrpPHxX02spJaHIqAlUG2UEU6xZYZCkDBaHUJW61Ew9WQRDJDofdwRRtA5EA/exec";
 
       const OFFICE_LAT = -6.978097516927085; // Ganti Latitude Pusat Kantor Anda
       const OFFICE_LON = 110.41336378779096; // Ganti Longitude Pusat Kantor Anda
@@ -2631,17 +2641,21 @@
       }
 
       function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
-          const R = 6371000; 
-          const dLat = deg2rad(lat2 - lat1);
-          const dLon = deg2rad(lon2 - lon1);
-          const a =
-              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          return R * c;
+        const R = 6371000;
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(deg2rad(lat1)) *
+            Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
       }
-      function deg2rad(deg) { return deg * (Math.PI / 180); }
+      function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+      }
 
       function formatDateString(dateVal) {
         if (!dateVal) return "";
@@ -2680,7 +2694,7 @@
         tglMasuk: "",
         statusAktif: "",
         tglBerhenti: "",
-        bebasArea: ""
+        bebasArea: "",
       };
 
       function simpanSesi() {
@@ -3168,7 +3182,7 @@
           tglMasuk: "",
           statusAktif: "",
           tglBerhenti: "",
-          bebasArea: ""
+          bebasArea: "",
         };
         document.getElementById("formLogin").reset();
         if (intervalDashboard) clearInterval(intervalDashboard);
@@ -4356,9 +4370,7 @@
                   option.value = device.deviceId;
                   option.text = device.label || `Kamera ${camCount++}`;
 
-                  if (
-                    localStream.getVideoTracks()[0].label === device.label
-                  ) {
+                  if (localStream.getVideoTracks()[0].label === device.label) {
                     option.selected = true;
                   }
                   videoSelect.appendChild(option);
@@ -4466,16 +4478,32 @@
         }
 
         if (currentUser.bebasArea !== "Ya") {
-          if (!liveKoordinat || liveKoordinat.includes("Memuat") || liveKoordinat.includes("tidak didukung") || liveKoordinat.includes("tidak diketahui")) {
-              alertNotif("Lokasi belum didapatkan. Pastikan GPS aktif dan diizinkan.", "warning");
-              return;
+          if (
+            !liveKoordinat ||
+            liveKoordinat.includes("Memuat") ||
+            liveKoordinat.includes("tidak didukung") ||
+            liveKoordinat.includes("tidak diketahui")
+          ) {
+            alertNotif(
+              "Lokasi belum didapatkan. Pastikan GPS aktif dan diizinkan.",
+              "warning",
+            );
+            return;
           }
-          const [userLat, userLon] = liveKoordinat.split(',').map(Number);
-          const distance = getDistanceFromLatLonInM(userLat, userLon, OFFICE_LAT, OFFICE_LON);
-          
+          const [userLat, userLon] = liveKoordinat.split(",").map(Number);
+          const distance = getDistanceFromLatLonInM(
+            userLat,
+            userLon,
+            OFFICE_LAT,
+            OFFICE_LON,
+          );
+
           if (distance > MAX_RADIUS) {
-              alertNotif(`Absen ditolak! Anda berada di luar area kantor (Jarak: ${Math.round(distance)}m). Maksimal jarak: ${MAX_RADIUS}m`, "danger");
-              return;
+            alertNotif(
+              `Absen ditolak! Anda berada di luar area kantor (Jarak: ${Math.round(distance)}m). Maksimal jarak: ${MAX_RADIUS}m`,
+              "danger",
+            );
+            return;
           }
         }
 
@@ -4638,7 +4666,7 @@
               <td>
                  <span class="badge ${badgeAkses} px-2 py-1 rounded-pill mb-1 d-block w-75 mx-auto">${u.role}</span>
                  <span class="badge ${badgeAktif} px-2 py-1 rounded-pill d-block w-75 mx-auto">${u.statusAktif}</span>
-                 <span class="badge bg-light text-muted border px-2 py-1 rounded-pill d-block w-75 mx-auto mt-1"><i class="bi bi-geo-alt-fill"></i> ${u.bebasArea === 'Ya' ? 'Bebas Area' : 'Terbatas'}</span>
+                 <span class="badge bg-light text-muted border px-2 py-1 rounded-pill d-block w-75 mx-auto mt-1"><i class="bi bi-geo-alt-fill"></i> ${u.bebasArea === "Ya" ? "Bebas Area" : "Terbatas"}</span>
               </td>
               <td>
                 <button onclick="bukaModalEdit('${u.id}')" class="btn btn-sm btn-light border rounded-circle me-1" title="Edit Data"><i class="bi bi-pencil-fill text-info"></i></button>
@@ -4718,9 +4746,12 @@
         document.getElementById("inputDivisi").value = user.divisi;
         document.getElementById("inputRole").value = user.role;
         document.getElementById("inputTglMasuk").value = user.tglMasuk || "";
-        document.getElementById("inputStatusAktif").value = user.statusAktif || "Aktif";
-        document.getElementById("inputTglBerhenti").value = user.tglBerhenti || "";
-        document.getElementById("inputBebasArea").value = user.bebasArea || "Tidak";
+        document.getElementById("inputStatusAktif").value =
+          user.statusAktif || "Aktif";
+        document.getElementById("inputTglBerhenti").value =
+          user.tglBerhenti || "";
+        document.getElementById("inputBebasArea").value =
+          user.bebasArea || "Tidak";
         toggleTglBerhenti();
 
         document.getElementById("modalKaryawanTitle").innerHTML =
@@ -4779,7 +4810,7 @@
           tglMasuk: tglMasuk,
           statusAktif: statusAktif,
           tglBerhenti: statusAktif === "Aktif" ? "" : tglBerhenti,
-          bebasArea: bebasArea
+          bebasArea: bebasArea,
         };
 
         try {
